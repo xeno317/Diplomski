@@ -10,6 +10,28 @@
 </head>
 <body>
     <input type="file" id="file" />
+    <div id="download" class="parent">
+        <div class="child">
+            <button onclick="download()">Download</button>
+            <div class="radioContainer">
+                <div>
+                    <input type="radio" id="png" name="format" onclick="setFormat(id)" value="png"
+                           checked>
+                    <label for="png">.png</label>
+                  </div>
+    
+                  <div>
+                    <input type="radio" id="jpeg" name="format" onclick="setFormat(id)" value="jpeg">
+                    <label for="jpeg">.jpeg</label>
+                  </div>
+              
+                  <div>
+                    <input type="radio" id="jpg" name="format" onclick="setFormat(id)" value="jpg">
+                    <label for="jpg">.jpg</label>
+                  </div>     
+            </div>
+        </div>
+    </div>
     <canvas id="myCanvas" width="100" height="100"></canvas>
 </body>
 </html>
