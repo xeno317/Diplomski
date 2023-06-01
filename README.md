@@ -35,6 +35,5 @@ Program također ima dva načina rada:
 
 [5] https://pythonnumericalmethods.berkeley.edu/notebooks/Index.html
 
-[6] 
 
 
