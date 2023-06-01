@@ -26,10 +26,15 @@ Program također ima dva načina rada:
 ## Korištena literatura
 
 [1] http://s3.amazonaws.com/nrbook.com/book_F210.html
+
 [2] http://rg.c-hip.net/2012/vj12/vj12.html
+
 [3] https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Pixel_manipulation_with_canvas
+
 [4] https://thepythoncodingbook.com/2021/08/30/2d-fourier-transform-in-python-and-fourier-synthesis-of-images/
+
 [5] https://pythonnumericalmethods.berkeley.edu/notebooks/Index.html
+
 [6] 
 
 
