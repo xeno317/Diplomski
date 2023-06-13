@@ -22,7 +22,35 @@
             <label for="greyscale_mode">Greyscale mode</label>
           </div>      
     </div>
+
     <div class="image_containers">
+        <div class="box">
+          <label id="box_title">Starting Image</label>
+          <img id="starting_image">
+          <button class="start_button" onclick="image_FFT()">Start</button>
+        </div>
+        <div class="box">
+          <label id="box_title">FFT Result</label>
+          <img id="fft_image">
+          <div class="slidecontainer">
+            <label class="reduction_label" for="myRange">Reduction Amount:</label>
+            <input type="range" min="1" max="100" value="50" class="slider" id="myRange" oninput="this.nextElementSibling.value = this.value">
+            <output class="slider_value">50</output>
+            <button class="reduction_button" onclick="reduce_FFT()">Reduce</button>
+        </div>
+        </div>
+        <div class="box">
+          <label id="box_title">Reduction Result</label>
+          <img id="reduction_result_image">
+          <button class="invert_button" onclick="invert_FFT()">Invert</button>
+        </div>
+        <div class="box">
+          <label id="box_title">Inverse FFT Result</label>
+          <img id="inverse_fft_image">
+        </div>
+      </div>
+    
+    <!--<div class="image_containers">
         <div class="box">
             <div>
                 <label id="box_title">Starting Image</label>
@@ -55,8 +83,13 @@
                 <canvas id="canvas_inverse" width="512px" height="512px"></canvas>
             </div>
         </div>   
-    </div>
+    </div>!-->
     <input type="file" id="file" />
+    <div class="results">
+        <label id="res" class="res"></label>
+        <label id="fft" class="fft"></label>
+        <label id="ifft" class="ifft"></label>
+    </div>
     <canvas id="helperCanvas"></canvas>
 </body>
 </html>

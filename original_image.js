@@ -21,11 +21,11 @@ var data=[];
 
 
 function handleFileSelect(evt) {
-    c = document.getElementById("canvas_original");
-    ctx = c.getContext("2d");
+    //c = document.getElementById("canvas_original");
+    //ctx = c.getContext("2d");
     c_helper=document.getElementById("helperCanvas");
     ctx_helper=c_helper.getContext("2d");
-    ctx.clearRect(0, 0, c.width, c.height);
+    //ctx.clearRect(0, 0, c.width, c.height);
     ctx_helper.clearRect(0,0,c_helper.width,c_helper.height);
     if(ctx2!=null){
         ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
@@ -70,13 +70,15 @@ function handleFileSelect(evt) {
                         data[i][j]=tdata[j*image.width+i];
                     }
                 }
-                ctx.clearRect(0, 0, c.width, c.height);
+                ctx_helper.clearRect(0, 0, ctx_helper.width, ctx_helper.height);
                 for(let i=0;i<image.width;i++){
                     for(let j=0;j<image.height;j++){
-                        ctx.fillStyle = `rgb(${data[i][j]},${data[i][j]},${data[i][j]})`;
-                          ctx.fillRect(i, j, 1, 1);
+                        ctx_helper.fillStyle = `rgb(${data[i][j]},${data[i][j]},${data[i][j]})`;
+                        ctx_helper.fillRect(i, j, 1, 1);
                     }
                 }
+                var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
+                document.getElementById("starting_image").src=image1;
             }
             if(mode=="color_mode"){
                 //var scale=Math.min(c.width/image.width,c.height/image.height);
@@ -103,7 +105,7 @@ function handleFileSelect(evt) {
                         data[i][j]=tdata[j*image.width+i];
                     }
                 }
-                console.log(data);
+                //console.log(data);
                 ctx.clearRect(0, 0, c.width, c.height);
                 for(let i=0;i<image.width;i++){
                     for(let j=0;j<image.height;j++){
@@ -151,29 +153,41 @@ function handleFileSelect(evt) {
 var result;
 
 function image_FFT(){
-    canvas2 = document.getElementById("canvas_fft");
-    ctx2 = canvas2.getContext("2d");
+    //document.getElementById("loading_image").hidden=false;
+    //canvas2 = document.getElementById("canvas_fft");
+    //ctx2 = canvas2.getContext("2d");
+    c_helper=document.getElementById("helperCanvas");
+    ctx_helper=c_helper.getContext("2d");
+    document.getElementById("res").innerHTML=image.width+"x"+image.height;
     console.log("Resolution:"+image.width+"x"+image.height);
     const start = performance.now();
     result=math.fft(data);
     const end = performance.now();
     console.log(`FFT time: ${end - start} ms`);
+    document.getElementById("fft").innerHTML=math.round(end-start,5);
+    ctx_helper.clearRect(0, 0, ctx_helper.width, ctx_helper.height);
     for(let i=0;i<image.width;i++){
         for(let j=0;j<image.height;j++){
-            ctx2.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
-              ctx2.fillRect(i, j, 1, 1);
+            ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
+              ctx_helper.fillRect(i, j, 1, 1);
         }
     }
+    //document.getElementById("loading_image").hidden=true;
+    var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
+    document.getElementById("fft_image").src=image1;
 }
 
 function reduce_FFT(){
-    canvas3 = document.getElementById("canvas_reduction");
+    c_helper=document.getElementById("helperCanvas");
+    ctx_helper=c_helper.getContext("2d");
+    //canvas3 = document.getElementById("canvas_reduction");
     var slider = document.getElementById("myRange");
-    var output = document.getElementById("demo");
-    ctx3 = canvas3.getContext("2d");
-    var reductiony=(image.width*(slider.value/100))/2;
-    var reductionx=(image.height*(slider.value/100))/2;
+    //ctx3 = canvas3.getContext("2d");
+    var slider_value=math.abs(slider.value-100);
+    var reductiony=(image.width*(slider_value/100))/2;
+    var reductionx=(image.height*(slider_value  /100))/2;
     console.log(reductionx,reductiony);
+    ctx_helper.clearRect(0, 0, ctx_helper.width, ctx_helper.height);
     for(let i=0;i<image.width;i++){
         for(let j=0;j<image.height;j++){
             if(i>reductiony && i<image.width-reductiony){
@@ -184,25 +198,33 @@ function reduce_FFT(){
                 result[i][j].re=0;
                 result[i][j].im=0;
             }
-            ctx3.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
-            ctx3.fillRect(i, j, 1, 1);
+            ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+            ctx_helper.fillRect(i, j, 1, 1);
         }
     }
+    var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
+    document.getElementById("reduction_result_image").src=image1;
 }
 
 function invert_FFT(){
-    canvas4 = document.getElementById("canvas_inverse");
-    ctx4 = canvas4.getContext("2d");
+    c_helper=document.getElementById("helperCanvas");
+    ctx_helper=c_helper.getContext("2d");
+    //canvas4 = document.getElementById("canvas_inverse");
+    //ctx4 = canvas4.getContext("2d");
     const start = performance.now();
     var resultRe=math.ifft(result);
     const end=performance.now();
     console.log(`Inverse FFT time: ${end - start} ms`);
+    document.getElementById("ifft").innerHTML=math.round(end-start,5);
+    ctx_helper.clearRect(0, 0, ctx_helper.width, ctx_helper.height);
     for(let i=0;i<image.width;i++){
         for(let j=0;j<image.height;j++){
-            ctx4.fillStyle = `rgb(${resultRe[i][j].re},${resultRe[i][j].re},${resultRe[i][j].re})`;
-            ctx4.fillRect(i, j, 1, 1);
+            ctx_helper.fillStyle = `rgb(${resultRe[i][j].re},${resultRe[i][j].re},${resultRe[i][j].re})`;
+            ctx_helper.fillRect(i, j, 1, 1);
         }
     }
+    var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
+    document.getElementById("inverse_fft_image").src=image1;
 }
 
 function download(){

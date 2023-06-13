@@ -6,22 +6,31 @@ html{
     font-weight: bold;
 }
 .image_containers{
-   display: grid;
-   grid-template-columns: repeat(4,1fr);
-   grid-auto-rows: minmax(0,1fr);
-   margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+    min-height:540px;
 }
 .box{
     color: whitesmoke;
     border: none;
     background-color: #333;
-    margin: 0.5%;
-    border-radius: 3px;
-    aspect-ratio: 1/1;
-    padding: 5%;
+    flex: 0 0 25%; /* Each div takes up 25% of the container width */
+    max-width: 25%;
+    position: relative;
+    padding: 10px;
+    box-sizing: border-box;
     text-align: center;
-
+    border-radius: 5px;
+    align-items: center;
 }
+.box img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
 #file{
     background-color: rgba(0, 0, 0, 0.1);
     padding: 0.6rem;
@@ -49,6 +58,16 @@ html{
     color: whitesmoke;
     font-weight: bold;
     transition: 0.3s;
+    position:absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+#box_title{
+    position:absolute;
+    top:10px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .start_button:hover{
     background-color: #04AA6D;
@@ -74,6 +93,10 @@ html{
     color: whitesmoke;
     font-weight: bold;
     transition: 0.3s;
+    position:absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .invert_button:hover{
     background-color: #04AA6D;
@@ -87,8 +110,51 @@ html{
 .slidecontainer{
     display: flex;
     vertical-align:middle;
+    position:absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.slider_value{
+    margin-left: 5px;
+    margin-top: 12px;
+}
+.slider_value::after{
+    content: "%";
 }
 .reduction_label{
     margin-top: 8px;
     margin-right: 4%;
+}
+.results{
+    display: grid;
+    background-color: #333;
+    border-radius: 5px;
+    color: whitesmoke;
+    width: 25%;
+    padding: 10px;
+}
+.res{
+    padding: 2px;
+}
+.fft{
+    padding: 2px;
+}
+.ifft{
+    padding: 2px;
+}
+.res::before{
+    content: "Image resolution: ";
+}
+.fft::before{
+   content: "FFT time: ";
+}
+.fft::after{
+    content: " ms";
+}
+.ifft::before{
+    content: "Inverse FFT time: ";
+}
+.ifft::after{
+    content: " ms";
 }
