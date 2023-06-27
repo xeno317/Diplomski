@@ -6,6 +6,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
 });
 
 var mode="greyscale_mode";
+var type="standard";
+var shape="rect";
 var c;
 var ctx;
 var c_helper;
@@ -21,21 +23,17 @@ var data=[];
 
 
 function handleFileSelect(evt) {
-    //c = document.getElementById("canvas_original");
-    //ctx = c.getContext("2d");
     c_helper=document.getElementById("helperCanvas");
     ctx_helper=c_helper.getContext("2d");
-    //ctx.clearRect(0, 0, c.width, c.height);
     ctx_helper.clearRect(0,0,c_helper.width,c_helper.height);
-    if(ctx2!=null){
-        ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+    if(document.getElementById("fft_image").src){
+        document.getElementById("fft_image").src='';
     }
-    if(ctx3!=null){
-        ctx3.clearRect(0, 0, canvas3.width, canvas3.height);
+    if(document.getElementById("reduction_result_image").src){
+        document.getElementById("reduction_result_image").src='';
     }
-    if(ctx4!=null){
-        ctx4.clearRect(0, 0, canvas4.width, canvas4.height);  
-        
+    if(document.getElementById("inverse_fft_image").src){
+        document.getElementById("inverse_fft_image").src='';
     }
     var files = evt.target.files;
     var selFile = files[0];
@@ -52,6 +50,9 @@ function handleFileSelect(evt) {
                 c_helper.width=image.width;
                 c_helper.height=image.height;
                 ctx_helper.drawImage(image,0,0);
+                document.getElementById("res").innerHTML=image.width+"x"+image.height;
+                document.getElementById("fft").innerHTML='';
+                document.getElementById("ifft").innerHTML='';
                 const imageData = ctx_helper.getImageData(0, 0, c_helper.width, c_helper.height);
                 const idata = imageData.data;
                 var tdata=[];
@@ -70,7 +71,7 @@ function handleFileSelect(evt) {
                         data[i][j]=tdata[j*image.width+i];
                     }
                 }
-                ctx_helper.clearRect(0, 0, ctx_helper.width, ctx_helper.height);
+                ctx_helper.clearRect(0, 0, image.width, image.height);
                 for(let i=0;i<image.width;i++){
                     for(let j=0;j<image.height;j++){
                         ctx_helper.fillStyle = `rgb(${data[i][j]},${data[i][j]},${data[i][j]})`;
@@ -81,44 +82,41 @@ function handleFileSelect(evt) {
                 document.getElementById("starting_image").src=image1;
             }
             if(mode=="color_mode"){
-                //var scale=Math.min(c.width/image.width,c.height/image.height);
-                //var x=(c.width/2)-(image.width/2)*scale;
-                //var y=(c.height/2)-(image.height/2)*scale;
                 c_helper.width=image.width;
                 c_helper.height=image.height;
                 ctx_helper.drawImage(image,0,0);
                 const imageData = ctx_helper.getImageData(0, 0, c_helper.width, c_helper.height);
                 const idata = imageData.data;
-                var tdata=[];
-                for(let i=0;i<image.width;i++){
+                for(let i=0;i<image.height;i++){
                     data[i]=[];
-                    for(let j=0;j<image.height;j++){
-                        data[i][j]=0;
-                        tdata[i*image.width+j]=0;      
-                    }
-                }
-                
-                tdata=idata;
-
-                for(let i=0;i<image.width;i++){
-                    for(let j=0;j<image.height;j++){
-                        data[i][j]=tdata[j*image.width+i];
-                    }
-                }
-                ctx.clearRect(0, 0, c.width, c.height);
-                for(let i=0;i<image.width;i++){
-                    for(let j=0;j<image.height;j++){
-                        ctx.fillStyle = `rgba(${data[i][j]},${data[i][j+1]},${data[i][j+2]},${data[i][j+3]})`;
-                          ctx.fillRect(i, j, 1, 1);
+                    for(let j=0;j<image.width*4;j++){
+                        data[i][j]=0; 
                     }
                 }
 
+                for(let i=0;i<image.height;i++){
+                    for(let j=0;j<image.width*4;j++){
+                        data[i][j]=idata[i*image.width*4+j];
+                    }
+                }
+                var counter=0;
+                ctx_helper.clearRect(0, 0, image.height, image.width);
+                for(let i=0;i<image.height;i++){
+                    counter=0;
+                    for(let j=0;j<image.width*4;j+=4){
+                        //ctx_helper.fillStyle = `rgba(${data[i][j]},${data[i][j+1]},${data[i][j+2]},${data[i][j+3]})`;
+                        ctx_helper.fillStyle = `rgb(${data[counter][j]},${data[counter][j+1]},${data[counter][j+2]})`;
+                        ctx_helper.fillRect(i, counter, 1, 1);
+                        counter++;
+                    }
+                }
+                var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
+                document.getElementById("starting_image").src=image1;
             }         
         }
         image.src=URL.createObjectURL(evt.target.files[0]);
     }
     else{
- 
     reader.readAsText(selFile);
 
     reader.onload = function() {
@@ -155,20 +153,33 @@ function image_FFT(){
     const worker = new Worker('worker.js');
     c_helper=document.getElementById("helperCanvas");
     ctx_helper=c_helper.getContext("2d");
-    document.getElementById("res").innerHTML=image.width+"x"+image.height;
     const start = performance.now();
     document.getElementById("fft_image").src="loading.svg";
-    worker.postMessage(data);
+    worker.postMessage({data:data,type:type});
 
     worker.onmessage = function(event) {
         result=event.data;
         const end = performance.now();
         document.getElementById("fft").innerHTML=math.round(end-start,5);
-        ctx_helper.clearRect(0, 0, ctx_helper.width, ctx_helper.height);
-        for(let i=0;i<image.width;i++){
-            for(let j=0;j<image.height;j++){
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
-                  ctx_helper.fillRect(i, j, 1, 1);
+        ctx_helper.clearRect(0, 0, image.width, image.height);
+        if(mode=="greyscale_mode"){
+            for(let i=0;i<image.width;i++){
+                for(let j=0;j<image.height;j++){
+                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
+                    //ctx_helper.fillStyle = `rgb(${Math.abs(result[i][j].re)},${Math.abs(result[i][j].re)},${Math.abs(result[i][j].re)})`;
+                    ctx_helper.fillRect(i, j, 1, 1);
+                }
+            }
+        }
+        if(mode=="color_mode"){
+            var counter=0;
+            for(let i=0;i<image.height;i++){
+                counter=0;  
+                for(let j=0;j<image.width*4;j+=4){
+                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j+1].re))*15},${Math.log(Math.abs(result[i][j+2].re))*15})`;
+                    ctx_helper.fillRect(i, counter, 1, 1);
+                    counter++;
+                }
             }
         }
         var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
@@ -178,31 +189,100 @@ function image_FFT(){
    
     
 }
-
+var result1;
 function reduce_FFT(){
-    c_helper=document.getElementById("helperCanvas");
-    ctx_helper=c_helper.getContext("2d");
+    document.getElementById("ifft").innerHTML='';
+    if(document.getElementById("reduction_result_image").src){
+        document.getElementById("reduction_result_image").src='';
+    }
+    if(document.getElementById("inverse_fft_image").src){
+        document.getElementById("inverse_fft_image").src='';
+    }
+    var c_helper=document.getElementById("helperCanvas");
+    var ctx_helper=c_helper.getContext("2d");
     var slider = document.getElementById("myRange");
     var slider_value=math.abs(slider.value-100);
     var reductiony=(image.width*(slider_value/100))/2;
     var reductionx=(image.height*(slider_value  /100))/2;
-    ctx_helper.clearRect(0, 0, ctx_helper.width, ctx_helper.height);
-    for(let i=0;i<image.width;i++){
-        for(let j=0;j<image.height;j++){
-            if(i>reductiony && i<image.width-reductiony){
-                result[i][j].re=0;
-                result[i][j].im=0;
+    ctx_helper.clearRect(0, 0, image.width, image.height);
+
+    result1=copyArray(result);
+
+    var selected_filter = document.getElementById("filter");
+    var text = selected_filter.options[selected_filter.selectedIndex].text;
+    if(type=="standard"){
+        if(shape=="circle"){
+            switch(text){
+                case 'Corner Cutoff':
+                    result1=corner_cutoff(result1,image.width,image.height,ctx_helper,reductionx,reductiony);
+                    break;
+                case 'Low pass':
+                    result1=low_pass_circle(result1,image.width,image.height,ctx_helper,slider_value);
+                    break;
+                case 'High pass':
+                    result1=high_pass_circle(result1,image.width,image.height,ctx_helper,slider_value);
+                    break;
+                case 'Sharpen':
+                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
+                    break;
             }
-            if(j>reductionx && j<image.height-reductionx){
-                result[i][j].re=0;
-                result[i][j].im=0;
+        }
+        if(shape=="rect"){
+            switch(text){
+                case 'Corner Cutoff':
+                    result1=corner_cutoff(result1,image.width,image.height,ctx_helper,reductionx,reductiony);
+                    break;
+                case 'Low pass':
+                    result1=low_pass(result1,image.width,image.height,ctx_helper,reductionx,reductiony);
+                    break;
+                case 'High pass':
+                    result1=high_pass(result1,image.width,image.height,ctx_helper,reductionx,reductiony);
+                    break;
+                case 'Sharpen':
+                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
+                    break;
             }
-            ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
-            ctx_helper.fillRect(i, j, 1, 1);
         }
     }
+    if(type=="inverted"){
+        if(shape=="circle"){
+            switch(text){
+                case 'Corner Cutoff':
+                    result1=corner_cutoff(result1,image.width,image.height,ctx_helper,reductionx,reductiony);
+                    break;
+                case 'Low pass':
+                    result1=high_pass_circle(result1,image.width,image.height,ctx_helper,slider_value);
+                    break;
+                case 'High pass':
+                    result1=low_pass_circle(result1,image.width,image.height,ctx_helper,slider_value);
+                    break;
+                case 'Sharpen':
+                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
+                    break;
+            }
+        }
+        if(shape=="rect"){
+            switch(text){
+                case 'Corner Cutoff':
+                    result1=corner_cutoff(result1,image.width,image.height,ctx_helper,reductionx,reductiony);
+                    break;
+                case 'Low pass':
+                    result1=high_pass(result1,image.width,image.height,ctx_helper,reductionx,reductiony);
+                    break;
+                case 'High pass':
+                    result1=low_pass(result1,image.width,image.height,ctx_helper,reductionx,reductiony);
+                    break;
+                case 'Sharpen':
+                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
+                    break;
+            }
+        }
+    }  
+    
+
     var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
     document.getElementById("reduction_result_image").src=image1;
+
 }
 
 var resultRe;
@@ -212,24 +292,36 @@ function invert_FFT(){
     ctx_helper=c_helper.getContext("2d");
     const start = performance.now();
     document.getElementById("inverse_fft_image").src="loading.svg";
-    worker1.postMessage(result);
+    worker1.postMessage(result1);
     
     worker1.onmessage = function(event) {
         resultRe=event.data;
         const end=performance.now();
         document.getElementById("ifft").innerHTML=math.round(end-start,5);
-        ctx_helper.clearRect(0, 0, ctx_helper.width, ctx_helper.height);
-        for(let i=0;i<image.width;i++){
-            for(let j=0;j<image.height;j++){
-                ctx_helper.fillStyle = `rgb(${resultRe[i][j].re},${resultRe[i][j].re},${resultRe[i][j].re})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+        ctx_helper.clearRect(0, 0, image.width, image.height);
+        if(mode=="greyscale_mode"){
+            for(let i=0;i<image.width;i++){
+                for(let j=0;j<image.height;j++){
+                    ctx_helper.fillStyle = `rgb(${resultRe[i][j].re},${resultRe[i][j].re},${resultRe[i][j].re})`;
+                    ctx_helper.fillRect(i, j, 1, 1);
+                }
+            }
+        }
+        if(mode=="color_mode"){
+            var counter=0;
+            for(let i=0;i<image.height;i++){
+                counter=0;  
+                for(let j=0;j<image.width*4;j+=4){
+                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(resultRe[i][j].re))*15},${Math.log(Math.abs(resultRe[i][j+1].re))*15},${Math.log(Math.abs(resultRe[i][j+2].re))*15})`;
+                    ctx_helper.fillRect(i, counter, 1, 1);
+                    counter++;
+                }
             }
         }
         var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
         document.getElementById("inverse_fft_image").src=image1;
         worker1.terminate();
     };
-    //var resultRe=math.ifft(result);
 }
 
 function download(){
@@ -244,3 +336,17 @@ function download(){
 function setMode(value){
     mode=value
 }
+function setType(value){
+    type=value
+}
+function setShape(value){
+    shape=value
+}
+function copyArray(array) {
+    if (!Array.isArray(array)) {
+      return array;
+    }
+  
+    const copiedArray = JSON.parse(JSON.stringify(array));
+    return copiedArray;
+  }

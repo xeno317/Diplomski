@@ -80,7 +80,10 @@ html{
     color: whitesmoke;
     font-weight: bold;
     transition: 0.3s;
-    margin-left: 4%;
+    margin: 15px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 .reduction_button:hover{
     background-color: #04AA6D;
@@ -109,15 +112,14 @@ html{
 }
 .slidecontainer{
     display: flex;
-    vertical-align:middle;
-    position:absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    margin-top: 15px;
+}
+.slider{
+    margin-top: 7px;
 }
 .slider_value{
     margin-left: 5px;
-    margin-top: 12px;
+    margin-top: 8px;
 }
 .slider_value::after{
     content: "%";
@@ -131,8 +133,10 @@ html{
     background-color: #333;
     border-radius: 5px;
     color: whitesmoke;
-    width: 25%;
+    width: 54%;
+    position: relative;
     padding: 10px;
+    margin: 3rem;
 }
 .res{
     padding: 2px;
@@ -157,4 +161,42 @@ html{
 }
 .ifft::after{
     content: " ms";
+}
+.options_container{
+    display: flex;
+    flex-wrap: wrap;
+}
+.options{
+    border: none;
+    flex: 0 0 25%;
+    max-width: 25%;
+    position: relative;
+}
+#options1{
+    background-color: #333;
+    border-radius: 5px;
+    margin-top: 10px;
+    color:whitesmoke;
+    padding: 20px;
+    max-width: 23%;
+}
+.results_type{
+    padding-top: 15px;
+    display: flex;
+}
+.filter_shape{
+    padding-top: 15px;
+    display: flex;
+}
+.select_container{
+    margin-top: 15px;
+}
+#filter{
+    border: none;
+    border-radius: 5px;
+    padding: 1%;
+    margin-left: 10px;
+}
+#filter option{
+    border-radius: 5px;
 }
