@@ -1,76 +1,152 @@
 importScripts('node_modules/mathjs/lib/browser/math.js');
-// worker.js
+
 self.onmessage = function(event) {
     const data=event.data.data;
     var type=event.data.type;
-    if(type=="standard"){
+    var mode=event.data.mode;
+    if(mode=="greyscale_mode"){
+      if(type=="standard"){
+        const fftResult=math.fft(data);
+  
+        const serializedResult = fftResult.map((row) =>
+        row.map((complex) => ({
+          re: complex.re,
+          im: complex.im,
+        }))
+        );
+  
+        self.postMessage(serializedResult);
+      }
+  
+      if(type=="inverted"){
+    
       const fftResult=math.fft(data);
-
-      const serializedResult = fftResult.map((row) =>
+  
+      const numRows=fftResult.length;
+      const numCols=fftResult[0].length;
+  
+      const halfNumRows = Math.floor(numRows / 2);
+      const halfNumCols = Math.floor(numCols / 2);
+  
+      const shiftedFFT = math.zeros([numRows, numCols]);
+      for (let i = 0; i < numRows; i++) {
+        for (let j = 0; j < numCols; j++) {
+          const newRow = (i + halfNumRows) % numRows;
+          const newCol = (j + halfNumCols) % numCols;
+          shiftedFFT[newRow][newCol] = fftResult[i][j];
+        }
+      }
+      const serializedResult = shiftedFFT.map((row) =>
       row.map((complex) => ({
         re: complex.re,
         im: complex.im,
-      }))
+        }))
       );
-
-      self.postMessage(serializedResult);
-    }
-
-    if(type=="inverted"){
   
-    const fftResult=math.fft(data);
-
-    const numRows=fftResult.length;
-    const numCols=fftResult[0].length;
-
-    const halfNumRows = Math.floor(numRows / 2);
-    const halfNumCols = Math.floor(numCols / 2);
-
-    const shiftedFFT = math.zeros([numRows, numCols]);
-    for (let i = 0; i < numRows; i++) {
-      for (let j = 0; j < numCols; j++) {
-        const newRow = (i + halfNumRows) % numRows;
-        const newCol = (j + halfNumCols) % numCols;
-        shiftedFFT[newRow][newCol] = fftResult[i][j];
+      self.postMessage(serializedResult);
       }
+
     }
-    //const shiftedFFT=copyArray(fftResult);
-/*
-    for(let row=0;row<rows;row++){
-      for(let col=0;col<columns;col++){
+    if(mode=="color_mode"){
+      if(type=="standard"){
+        const redChannel = data.map(row =>
+          row.filter((_, index) => index % 4 === 0)
+        );
+        
+        const greenChannel = data.map(row =>
+          row.filter((_, index) => index % 4 === 1)
+        );
+        
+        const blueChannel = data.map(row =>
+          row.filter((_, index) => index % 4 === 2)
+        );
+        
+        const redfftResult=math.fft(redChannel);
+        const greenfftResult=math.fft(greenChannel);
+        const bluefftResult=math.fft(blueChannel);
 
-        const dx = col - centerX;
-        const dy = row - centerY;
-
-        const invertedRow = centerY - dy;
-        const invertedCol = centerX - dx;
-
-       // const newRow=Math.abs(row-Math.floor(rows/2));
-       //const newCol=Math.abs(col-Math.floor(columns/2));
-       //console.log(invertedRow,invertedCol,row,col);
-        shiftedFFT[invertedRow][invertedCol]=fftResult[row][col];
+        const serializedResult = {
+          red: redfftResult.map(row =>
+            row.map(complex => ({
+              re: complex.re,
+              im: complex.im
+            }))
+          ),
+          green: greenfftResult.map(row =>
+            row.map(complex => ({
+              re: complex.re,
+              im: complex.im
+            }))
+          ),
+          blue: bluefftResult.map(row =>
+            row.map(complex => ({
+              re: complex.re,
+              im: complex.im
+            }))
+          )
+        };
+        
+        self.postMessage(serializedResult);
       }
-    } */  
-/*
-    const numRows = fftResult.length;
-    const numCols = fftResult[0].length;
+      if(type=="inverted"){
+        const redChannel = data.map(row =>
+          row.filter((_, index) => index % 4 === 0)
+        );
+        
+        const greenChannel = data.map(row =>
+          row.filter((_, index) => index % 4 === 1)
+        );
+        
+        const blueChannel = data.map(row =>
+          row.filter((_, index) => index % 4 === 2)
+        );
+        
+        const redfftResult=math.fft(redChannel);
+        const greenfftResult=math.fft(greenChannel);
+        const bluefftResult=math.fft(blueChannel);
 
-    const shiftedFFT = math.zeros([numRows, numCols]);
-    for (let i = 0; i < numRows; i++) {
-      for (let j = 0; j < numCols; j++) {
-        const shiftFactor = Math.pow(-1, i + j);
-        shiftedFFT.slice(math.index(i, j), math.multiply(fftResult.slice(math.index(i, j)), shiftFactor));
+        const numRows=redfftResult.length;
+        const numCols=redfftResult[0].length;
+  
+        const halfNumRows = Math.floor(numRows / 2);
+        const halfNumCols = Math.floor(numCols / 2);
+  
+        const shiftedFFTR = math.zeros([numRows, numCols]);
+        const shiftedFFTG = math.zeros([numRows, numCols]);
+        const shiftedFFTB = math.zeros([numRows, numCols]);
+        for (let i = 0; i < numRows; i++) {
+          for (let j = 0; j < numCols; j++) {
+            const newRow = (i + halfNumRows) % numRows;
+            const newCol = (j + halfNumCols) % numCols;
+            shiftedFFTR[newRow][newCol] = redfftResult[i][j];
+            shiftedFFTG[newRow][newCol] = greenfftResult[i][j];
+            shiftedFFTB[newRow][newCol] = bluefftResult[i][j];
+          }
+        }
+
+        const serializedResult = {
+          red: shiftedFFTR.map(row =>
+            row.map(complex => ({
+              re: complex.re,
+              im: complex.im
+            }))
+          ),
+          green: shiftedFFTG.map(row =>
+            row.map(complex => ({
+              re: complex.re,
+              im: complex.im
+            }))
+          ),
+          blue: shiftedFFTB.map(row =>
+            row.map(complex => ({
+              re: complex.re,
+              im: complex.im
+            }))
+          )
+        };
+        
+        self.postMessage(serializedResult);
       }
-    }
-    */
-    const serializedResult = shiftedFFT.map((row) =>
-    row.map((complex) => ({
-      re: complex.re,
-      im: complex.im,
-    }))
-    );
-
-    self.postMessage(serializedResult);
     }
   };
 
