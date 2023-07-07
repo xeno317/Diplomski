@@ -297,25 +297,25 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction){
     }
     return result;
 }
-function sharpen(result,width,height,ctx_helper,slider_value){
-    max=0;
-    var min=result[0][0].re;
-    for(let i=0;i<width;i++){
-        for(let j=0;j<height;j++){
-            if(Math.log(Math.abs(result[i][j].re))>max){
-                max=Math.log(Math.abs(result[i][j].re));
-            }
-            if(Math.log(Math.abs(result[i][j].re))<min){
-                min=Math.log(Math.abs(result[i][j].re));
-            }
-        }
+function sharpen(result,width,height,ctx_helper,reduction){
+    const rows=result.length;
+    const cols=result[0].length;
+
+    const middleRow=Math.floor(rows/2);
+    const middleCol=Math.floor(cols/2);
+    if(width<=height){
+        reduction=(width*(reduction/100))/2;
     }
-    var sharpen_cutoff=(max-Math.abs(min))*(1-slider_value/100);
-    for(let i=0;i<width;i++){
-        for(let j=0;j<height;j++){
-            if(Math.log(Math.abs(result[i][j].re))<sharpen_cutoff){
+    if(width>height){
+        reduction=(height*(reduction/100))/2;
+    }
+
+    for(let i=0;i<rows;i++){
+        for(let j=0;j<cols;j++){
+            var distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
+            if(distance>reduction){
                 result[i][j].re=result[i][j].re*5;
-                result[i][j].re=result[i][j].im*5;
+                result[i][j].im=result[i][j].im*5;
             }
             ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
             ctx_helper.fillRect(i, j, 1, 1);
@@ -325,5 +325,36 @@ function sharpen(result,width,height,ctx_helper,slider_value){
 }
 
 function gaussLowPass(result,width,height,ctx_helper){
-    
+    console.log("a");
+    const kernelSize=5;
+    const sigma=2;
+
+    const kernel = [];
+    var kernelSum=0;
+    for (let y = 0; y < kernelSize; y++) {
+        const row = [];
+        for (let x = 0; x < kernelSize; x++) {
+          const distanceSquared = (x - kernelSize / 2) ** 2 + (y - kernelSize / 2) ** 2;
+          const value = Math.exp(-distanceSquared / (2 * sigma * sigma)) / (2 * Math.PI * sigma * sigma);
+          row.push(value);
+          kernelSum += value;
+        }
+        kernel.push(row);
+      }
+
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          keranel[y][x] /= kernelSum;
+        }
+      }
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          result[y][x].re *= kernel[y][x];
+          result[y][x].re *= kernel[y][x];
+          //ctx_helper.fillStyle = `rgb(${result[y][x].re},${result[y][x].re},${result[y][x].re})`;
+          ctx_helper.fillStyle = `rgb(${Math.abs(result[y][x].re)},${Math.abs(result[y][x].re)},${Math.abs(result[y][x].re)})`;
+          ctx_helper.fillRect(y, x, 1, 1);
+        }
+      }
+    return result;
 }

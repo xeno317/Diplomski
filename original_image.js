@@ -1,7 +1,7 @@
 window.addEventListener("DOMContentLoaded", (event) => {
     const el=document.getElementById('file');
     if(el){
-        el.addEventListener('change',handleFileSelect, false);
+        el.addEventListener('change',handleFileSelect,false);
     }
 });
 
@@ -21,10 +21,9 @@ var ctx3;
 var image;
 var data=[];
 
-
 function handleFileSelect(evt) {
     c_helper=document.getElementById("helperCanvas");
-    ctx_helper=c_helper.getContext("2d");
+    ctx_helper=c_helper.getContext("2d",{ willReadFrequently: true });
     ctx_helper.clearRect(0,0,c_helper.width,c_helper.height);
     if(document.getElementById("fft_image").src){
         document.getElementById("fft_image").src='';
@@ -76,6 +75,7 @@ function handleFileSelect(evt) {
                 }
                 var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
                 document.getElementById("starting_image").src=image1;
+                //ctx_helper.clearRect(0, 0, image.width, image.height);
             }
             if(mode=="color_mode"){
                 c_helper.width=image.width;
@@ -242,6 +242,9 @@ function reduce_FFT(){
                 case 'Sharpen':
                     result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
                     break;
+                case 'Gauss low pass':
+                    result1=gaussLowPass(result,image.width,image.height,ctx_helper);
+                    break;
             }
         }
     }
@@ -328,10 +331,10 @@ function download(){
 }
 
 function setMode(value){
-    mode=value
+    mode=value;
 }
 function setType(value){
-    type=value
+    type=value;
 }
 function setShape(value){
     shape=value
