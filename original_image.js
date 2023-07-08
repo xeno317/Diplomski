@@ -22,6 +22,7 @@ var image;
 var data=[];
 
 function handleFileSelect(evt) {
+    data=[];
     c_helper=document.getElementById("helperCanvas");
     ctx_helper=c_helper.getContext("2d",{ willReadFrequently: true });
     ctx_helper.clearRect(0,0,c_helper.width,c_helper.height);
@@ -75,11 +76,14 @@ function handleFileSelect(evt) {
                 }
                 var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
                 document.getElementById("starting_image").src=image1;
-                //ctx_helper.clearRect(0, 0, image.width, image.height);
+                ctx_helper.clearRect(0, 0, image.width, image.height);
             }
             if(mode=="color_mode"){
                 c_helper.width=image.width;
                 c_helper.height=image.height;
+                document.getElementById("res").innerHTML=image.width+"x"+image.height;
+                document.getElementById("fft").innerHTML='';
+                document.getElementById("ifft").innerHTML='';
                 ctx_helper.drawImage(image,0,0);
                 const imageData = ctx_helper.getImageData(0, 0, c_helper.width, c_helper.height);
                 const idata = imageData.data;
@@ -95,17 +99,6 @@ function handleFileSelect(evt) {
                     }
                 }
                 
-                /*
-                for(let i=0;i<image.height;i++){
-                    counter=0;
-                    for(let j=0;j<image.width*4;j+=4){
-                        ctx_helper.fillStyle = `rgba(${data[i][j]},${data[i][j+1]},${data[i][j+2]},${data[i][j+3]})`;
-                        ctx_helper.fillStyle = `rgb(${data[i][j]},${data[i][j+1]},${data[i][j+2]})`;
-                        ctx_helper.fillRect(counter, i, 1, 1);
-                        counter++;
-                    }
-                }
-                */
                 var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
                 document.getElementById("starting_image").src=image1;
                 ctx_helper.clearRect(0, 0, image.width, image.height);
@@ -147,6 +140,7 @@ function handleFileSelect(evt) {
 var result;
 
 function image_FFT(){
+    result=null;
     if(document.getElementById("fft_image").src){
         document.getElementById("fft_image").src='';
     }
@@ -164,7 +158,7 @@ function image_FFT(){
     worker.postMessage({data:data,type:type,mode:mode});
 
     worker.onmessage = function(event) {
-        result=event.data;;
+        result=event.data;
         const end = performance.now();
         document.getElementById("fft").innerHTML=math.round(end-start,5);
         ctx_helper.clearRect(0, 0, image.width, image.height);
@@ -172,7 +166,6 @@ function image_FFT(){
             for(let i=0;i<image.width;i++){
                 for(let j=0;j<image.height;j++){
                     ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
-                    //ctx_helper.fillStyle = `rgb(${Math.abs(result[i][j].re)},${Math.abs(result[i][j].re)},${Math.abs(result[i][j].re)})`;
                     ctx_helper.fillRect(i, j, 1, 1);
                 }
             }
@@ -211,8 +204,7 @@ function reduce_FFT(){
     if(mode=="greyscale_mode"){
         result1=copyArray(result);
     }
-    if(mode=="color_mode"){
-        
+    if(mode=="color_mode"){  
         result1=JSON.parse(JSON.stringify(result));
     }
     var selected_filter = document.getElementById("filter");
@@ -221,10 +213,10 @@ function reduce_FFT(){
         if(shape=="circle"){
             switch(text){
                 case 'Low pass':
-                    result1=low_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value);
+                    result1=low_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'High pass':
-                    result1=high_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value);
+                    result1=high_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'Sharpen':
                     result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
@@ -252,13 +244,13 @@ function reduce_FFT(){
         if(shape=="circle"){
             switch(text){
                 case 'Low pass':
-                    result1=low_pass_circle(result1,image.width,image.height,ctx_helper,slider_value);
+                    result1=low_pass_circle(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'High pass':
-                    result1=high_pass_circle(result1,image.width,image.height,ctx_helper,slider_value);
+                    result1=high_pass_circle(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'Sharpen':
-                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
+                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'Gauss low pass':
                     result1=gaussLowPass(result1,image.width,image.height,ctx_helper);
@@ -273,7 +265,7 @@ function reduce_FFT(){
                     result1=high_pass_inverted(result1,image.width,image.height,ctx_helper,reductionx,reductiony,mode);
                     break;
                 case 'Sharpen':
-                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
+                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
             }
         }
