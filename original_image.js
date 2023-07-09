@@ -3,6 +3,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
     if(el){
         el.addEventListener('change',handleFileSelect,false);
     }
+    const radioButtons = document.querySelectorAll('input[type="radio"][name="mode"]');
+    radioButtons.forEach(radio => {
+      radio.addEventListener('click', () => {
+        el.value = null;
+      });
+    });
 });
 
 var mode="greyscale_mode";
@@ -138,9 +144,8 @@ function handleFileSelect(evt) {
 }
 
 var result;
-
+var typeNow=type;
 function image_FFT(){
-    result=null;
     if(document.getElementById("fft_image").src){
         document.getElementById("fft_image").src='';
     }
@@ -155,7 +160,8 @@ function image_FFT(){
     ctx_helper=c_helper.getContext("2d");
     const start = performance.now();
     document.getElementById("fft_image").src="loading.svg";
-    worker.postMessage({data:data,type:type,mode:mode});
+    worker.postMessage({data:data,type:type,mode:mode,result:result,typeNow:typeNow});
+    typeNow=type;
 
     worker.onmessage = function(event) {
         result=event.data;
@@ -324,6 +330,7 @@ function download(){
 
 function setMode(value){
     mode=value;
+
 }
 function setType(value){
     type=value;
