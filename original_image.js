@@ -13,7 +13,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
 var mode="greyscale_mode";
 var type="standard";
-var shape="rect";
+var shape="circle";
 var c;
 var ctx;
 var c_helper;

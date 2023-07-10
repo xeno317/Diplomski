@@ -89,7 +89,7 @@ self.onmessage = function(event) {
       }
     }
     if(mode=="color_mode"){
-      if(type=="standard"){
+      if(result==undefined){
         const redChannel = data.map(row =>
           row.filter((_, index) => index % 4 === 0)
         );
@@ -101,52 +101,87 @@ self.onmessage = function(event) {
         const blueChannel = data.map(row =>
           row.filter((_, index) => index % 4 === 2)
         );
-        
-        const redfftResult=math.fft(redChannel);
-        const greenfftResult=math.fft(greenChannel);
-        const bluefftResult=math.fft(blueChannel);
-
-        const serializedResult = {
-          red: redfftResult.map(row =>
-            row.map(complex => ({
-              re: complex.re,
-              im: complex.im
-            }))
-          ),
-          green: greenfftResult.map(row =>
-            row.map(complex => ({
-              re: complex.re,
-              im: complex.im
-            }))
-          ),
-          blue: bluefftResult.map(row =>
-            row.map(complex => ({
-              re: complex.re,
-              im: complex.im
-            }))
-          )
-        };
-        
-        self.postMessage(serializedResult);
+        var redfftResult=math.fft(redChannel);
+        var greenfftResult=math.fft(greenChannel);
+        var bluefftResult=math.fft(blueChannel);
+      }
+      if(result){
+        var redfftResult=result.red;
+        var greenfftResult=result.green;
+        var bluefftResult=result.blue;
+      }
+      if(type=="standard"){
+        if(typeNow=="inverted"){
+          const numRows=redfftResult.length;
+          const numCols=redfftResult[0].length;
+    
+          const halfNumRows = Math.floor(numRows / 2);
+          const halfNumCols = Math.floor(numCols / 2);
+    
+          const shiftedFFTR = math.zeros([numRows, numCols]);
+          const shiftedFFTG = math.zeros([numRows, numCols]);
+          const shiftedFFTB = math.zeros([numRows, numCols]);
+          for (let i = 0; i < numRows; i++) {
+            for (let j = 0; j < numCols; j++) {
+              const newRow = (i + halfNumRows) % numRows;
+              const newCol = (j + halfNumCols) % numCols;
+              shiftedFFTR[newRow][newCol] = redfftResult[i][j];
+              shiftedFFTG[newRow][newCol] = greenfftResult[i][j];
+              shiftedFFTB[newRow][newCol] = bluefftResult[i][j];
+            }
+          }
+  
+          const serializedResult = {
+            red: shiftedFFTR.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            ),
+            green: shiftedFFTG.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            ),
+            blue: shiftedFFTB.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            )
+          };
+          
+          self.postMessage(serializedResult);
+        }
+        else{
+          const serializedResult = {
+            red: redfftResult.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            ),
+            green: greenfftResult.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            ),
+            blue: bluefftResult.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            )
+          };
+          
+          self.postMessage(serializedResult);
+        }
       }
       if(type=="inverted"){
-        const redChannel = data.map(row =>
-          row.filter((_, index) => index % 4 === 0)
-        );
-        
-        const greenChannel = data.map(row =>
-          row.filter((_, index) => index % 4 === 1)
-        );
-        
-        const blueChannel = data.map(row =>
-          row.filter((_, index) => index % 4 === 2)
-        );
-        
-        const redfftResult=math.fft(redChannel);
-        const greenfftResult=math.fft(greenChannel);
-        const bluefftResult=math.fft(blueChannel);
-
-        const numRows=redfftResult.length;
+        if(typeNow=="standard"){
+          const numRows=redfftResult.length;
         const numCols=redfftResult[0].length;
   
         const halfNumRows = Math.floor(numRows / 2);
@@ -187,6 +222,31 @@ self.onmessage = function(event) {
         };
         
         self.postMessage(serializedResult);
+        }
+        else{
+          const serializedResult = {
+            red: redfftResult.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            ),
+            green: greenfftResult.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            ),
+            blue: bluefftResult.map(row =>
+              row.map(complex => ({
+                re: complex.re,
+                im: complex.im
+              }))
+            )
+          };
+          
+          self.postMessage(serializedResult);
+        }
       }
     }
   };
