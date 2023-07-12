@@ -93,7 +93,9 @@
             <div class="slidecontainer">
             <label class="reduction_label" for="myRange">Reduction Amount:</label>
             <input type="range" min="1" max="100" value="50" class="slider" id="myRange" oninput="this.nextElementSibling.value = this.value">
-            <output class="slider_value">50</output>
+            <form>
+              <input type="number" id="slider_input" name="slider_input" placeholder="50">
+            </form>
         </div>
         <button class="reduction_button" onclick="reduce_FFT()" id="reduction_button">Reduce</button>
         </div>

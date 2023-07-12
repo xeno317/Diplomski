@@ -1,4 +1,13 @@
 window.addEventListener("DOMContentLoaded", (event) => {
+    const slider_input=document.getElementById("slider_input");
+    const slider=document.getElementById("myRange");
+
+    slider_input.addEventListener('input',function(){
+        slider.value=slider_input.value;
+    });
+    slider.addEventListener('input',function(){
+        slider_input.value=slider.value;
+    });
     const el=document.getElementById('file');
     if(el){
         el.addEventListener('change',handleFileSelect,false);
