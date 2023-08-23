@@ -439,6 +439,7 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
    
 }
 function sharpen(result,width,height,ctx_helper,reduction,mode){
+    console.log("a");
     if(mode=="greyscale_mode"){
         const rows=result.length;
         const cols=result[0].length;
@@ -526,5 +527,55 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
    
 }
 
-function gaussLowPass(result,width,height,ctx_helper){
+function gaussLowPass(result,ctx_helper,slider_value,mode){
+    if(mode=="greyscale_mode"){
+        const rows = result.length;
+        const cols = result[0].length;
+        const middleRow = Math.floor(rows / 2);
+        const middleCol = Math.floor(cols / 2);
+        var sigma=slider_value;
+    
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
+                const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
+    
+                result[i][j].re *= filterValue;
+                result[i][j].im *= filterValue;
+
+                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
+                ctx_helper.fillRect(i, j, 1, 1);
+                
+            }
+        }
+    
+        return result;
+    }
+    if(mode=="color_mode"){
+        const rows = result.red.length;
+        const cols = result.red[0].length;
+        const middleRow = Math.floor(rows / 2);
+        const middleCol = Math.floor(cols / 2);
+        var sigma=slider_value;
+    
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
+                const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
+    
+                result.red[i][j].re *= filterValue;
+                result.red[i][j].im *= filterValue;
+                result.green[i][j].re *= filterValue;
+                result.green[i][j].im *= filterValue;
+                result.blue[i][j].re *= filterValue;
+                result.blue[i][j].im *= filterValue;
+
+                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.red[i][j].re))*15},${Math.log(Math.abs(result.green[i][j].re))*15},${Math.log(Math.abs(result.blue[i][j].re))*15})`;
+                ctx_helper.fillRect(i, j, 1, 1);
+            }
+        }
+    
+        return result;
+    }
+
 }

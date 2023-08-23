@@ -268,7 +268,7 @@ function reduce_FFT(){
                     result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'Gauss low pass':
-                    result1=gaussLowPass(result1,image.width,image.height,ctx_helper);
+                    result1=gaussLowPass(result1,ctx_helper,slider_value,mode);
             }
         }
         if(shape=="rect"){
@@ -310,6 +310,7 @@ function invert_FFT(){
             for(let i=0;i<image.width;i++){
                 for(let j=0;j<image.height;j++){
                     ctx_helper.fillStyle = `rgb(${Math.abs(resultRe[i][j].re)},${Math.abs(resultRe[i][j].re)},${Math.abs(resultRe[i][j].re)})`;
+                    //ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(resultRe[i][j].re))*15},${Math.log(Math.abs(resultRe[i][j].re))*15},${Math.log(Math.abs(resultRe[i][j].re))*15})`;
                     ctx_helper.fillRect(i, j, 1, 1);
                 }
             }

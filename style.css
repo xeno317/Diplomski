@@ -16,7 +16,7 @@ html{
     color: whitesmoke;
     border: none;
     background-color: #333;
-    flex: 0 0 25%; /* Each div takes up 25% of the container width */
+    flex: 0 0 25%; 
     max-width: 25%;
     position: relative;
     padding: 10px;
@@ -58,10 +58,6 @@ html{
     color: whitesmoke;
     font-weight: bold;
     transition: 0.3s;
-    position:absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
 }
 #box_title{
     position:absolute;
@@ -81,9 +77,6 @@ html{
     font-weight: bold;
     transition: 0.3s;
     margin: 15px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
 }
 .reduction_button:hover{
     background-color: #04AA6D;
@@ -96,10 +89,6 @@ html{
     color: whitesmoke;
     font-weight: bold;
     transition: 0.3s;
-    position:absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
 }
 .invert_button:hover{
     background-color: #04AA6D;
@@ -196,4 +185,6 @@ html{
     border-radius: 5px;
     padding: 1%;
     margin-left: 10px;
+}#buttton_container{
+    padding-top: 20px;
 }

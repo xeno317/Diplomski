@@ -28,7 +28,6 @@
         <div class="box">
           <label id="box_title">Starting Image</label>
           <img id="starting_image">
-          <button class="start_button" onclick="image_FFT()">Start</button>
         </div>
         <div class="box">
           <label id="box_title">FFT Result</label>
@@ -37,7 +36,6 @@
         <div class="box">
           <label id="box_title">Reduction Result</label>
           <img id="reduction_result_image">
-          <button class="invert_button" onclick="invert_FFT()">Invert</button>
         </div>
         <div class="box">
           <label id="box_title">Inverse FFT Result</label>
@@ -97,7 +95,9 @@
               <input type="number" id="slider_input" name="slider_input" placeholder="50">
             </form>
         </div>
-        <button class="reduction_button" onclick="reduce_FFT()" id="reduction_button">Reduce</button>
+          <button class="start_button" onclick="image_FFT()">1. Start</button>
+          <button class="reduction_button" onclick="reduce_FFT()" id="reduction_button">2. Reduce</button>
+          <button class="invert_button" onclick="invert_FFT()">3. Invert</button>
         </div>
        
     </div>
