@@ -3,14 +3,16 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
         for(let i=0;i<width;i++){
             for(let j=0;j<height;j++){
                 if(i>reductiony && i<width-reductiony){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    //result[i][j].re=0;
+                    //result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }
                 if(j>reductionx && j<height-reductionx){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -51,16 +53,16 @@ function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
         for(let i=0;i<width;i++){
             for(let j=0;j<height;j++){
                 if(i<reductiony || i>width-reductiony){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }
                 
                 if(j<reductionx || j>height-reductionx){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }
                 
-                ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -106,10 +108,10 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
             for(let j=0;j<height;j++){
                 
                 if(i<reductionx && j<reductiony || i<reductionx && j>height-reductiony || i>width-reductionx && j>height-reductiony || i>width-reductionx && j<reductiony){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }                          
-                ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -144,11 +146,11 @@ function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony
             for(let j=0;j<height;j++){
                 
                 if(i>reductionx && i<width-reductionx && j>reductiony && j<height-reductiony){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 } 
                                          
-                ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j].re},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -194,10 +196,10 @@ function low_pass_circle(result,width,height,ctx_helper,reduction,mode){
             for(let j=0;j<cols;j++){
                 var distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 if(distance>reduction){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -259,10 +261,13 @@ function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode)
                 var distanceDownLeft=Math.sqrt(Math.pow(i-downLeft[0],2)+Math.pow(j-downLeft[1],2));
                 var distanceDownRight=Math.sqrt(Math.pow(i-downRight[0],2)+Math.pow(j-downRight[1],2));
                 if(distanceUpLeft>reduction && distanceUpRight>reduction && distanceDownLeft>reduction && distanceDownRight>reduction){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    //result[i][j].re=0;
+                    //result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                //ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -324,11 +329,11 @@ function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
             for(let j=0;j<cols;j++){
                 var distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 if(distance<reduction){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }
      
-                ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -392,10 +397,10 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
                 var distanceDownLeft=Math.sqrt(Math.pow(i-downLeft[0],2)+Math.pow(j-downLeft[1],2));
                 var distanceDownRight=Math.sqrt(Math.pow(i-downRight[0],2)+Math.pow(j-downRight[1],2));
                 if(distanceUpLeft<reduction || distanceUpRight<reduction || distanceDownLeft<reduction || distanceDownRight<reduction){
-                    result[i][j].re=0;
-                    result[i][j].im=0;
+                    result[i][j][0]=0;
+                    result[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -439,7 +444,6 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
    
 }
 function sharpen(result,width,height,ctx_helper,reduction,mode){
-    console.log("a");
     if(mode=="greyscale_mode"){
         const rows=result.length;
         const cols=result[0].length;
@@ -458,19 +462,19 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
             for(let j=0;j<cols;j++){
                 var distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 if(distance==0){
-                    result[i][j].re=result[i][j].re*0.5;
-                    result[i][j].im=result[i][j].im*0.5;
+                    result[i][j][0]=result[i][j][0]*0.5;
+                    result[i][j][1]=result[i][j][1]*0.5;
                 }
                 if(distance>0 && distance<=sharpenDistance){
                     var multiplier=(((distance*0.5)-0)*((4-0.5)/(sharpenDistance/2-0))+0.5);
-                    result[i][j].re=result[i][j].re*multiplier;
-                    result[i][j].im=result[i][j].im*multiplier;
+                    result[i][j][0]=result[i][j][0]*multiplier;
+                    result[i][j][1]=result[i][j][1]*multiplier;
                 }
                 if(distance>sharpenDistance){
-                    result[i][j].re=result[i][j].re*4;
-                    result[i][j].im=result[i][j].im*4;
+                    result[i][j][0]=result[i][j][0]*4;
+                    result[i][j][1]=result[i][j][1]*4;
                 }
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
+                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -539,11 +543,9 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
             for (let j = 0; j < cols; j++) {
                 const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
-    
-                result[i][j].re *= filterValue;
-                result[i][j].im *= filterValue;
-
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
+                result[i][j][0] *= filterValue;
+                result[i][j][1] *= filterValue;
+                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
                 ctx_helper.fillRect(i, j, 1, 1);
                 
             }
