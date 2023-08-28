@@ -3,8 +3,6 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
         for(let i=0;i<width;i++){
             for(let j=0;j<height;j++){
                 if(i>reductiony && i<width-reductiony){
-                    //result[i][j].re=0;
-                    //result[i][j].im=0;
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
@@ -22,22 +20,22 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
         for(let i=0;i<width;i++){
             for(let j=0;j<height;j++){
                 if(i>reductiony && i<width-reductiony){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }
                 if(j>reductionx && j<height-reductionx){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result.red[i][j].re},${result.green[i][j].re},${result.blue[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -74,24 +72,24 @@ function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
         for(let i=0;i<width;i++){
             for(let j=0;j<height;j++){
                 if(i<reductiony || i>width-reductiony){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }
                 
                 if(j<reductionx || j>height-reductionx){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }
                 
-                ctx_helper.fillStyle = `rgb(${result.red[i][j].re},${result.green[i][j].re},${result.blue[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -124,14 +122,14 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
             for(let j=0;j<height;j++){
                 
                 if(i<reductionx && j<reductiony || i<reductionx && j>height-reductiony || i>width-reductionx && j>height-reductiony || i>width-reductionx && j<reductiony){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }                          
-                ctx_helper.fillStyle = `rgb(${result.red[i][j].re},${result.green[i][j].re},${result.blue[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -150,7 +148,7 @@ function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony
                     result[i][j][1]=0;
                 } 
                                          
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j].re},${result[i][j][0]})`;
+                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -161,15 +159,15 @@ function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony
             for(let j=0;j<height;j++){
                 
                 if(i>reductionx && i<width-reductionx && j>reductiony && j<height-reductiony){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 } 
                                          
-                ctx_helper.fillStyle = `rgb(${result.red[i][j].re},${result.green[i][j].re},${result.blue[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -206,8 +204,8 @@ function low_pass_circle(result,width,height,ctx_helper,reduction,mode){
         return result;
     }
     if(mode=="color_mode"){
-        const rows=result.red.length;
-        const cols=result.red[0].length;
+        const rows=result.fftResultArrayRed.length;
+        const cols=result.fftResultArrayRed[0].length;
     
         const middleRow=Math.floor(rows/2);
         const middleCol=Math.floor(cols/2);
@@ -222,14 +220,14 @@ function low_pass_circle(result,width,height,ctx_helper,reduction,mode){
             for(let j=0;j<cols;j++){
                 var distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 if(distance>reduction){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result.red[i][j].re},${result.green[i][j].re},${result.blue[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -261,12 +259,9 @@ function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode)
                 var distanceDownLeft=Math.sqrt(Math.pow(i-downLeft[0],2)+Math.pow(j-downLeft[1],2));
                 var distanceDownRight=Math.sqrt(Math.pow(i-downRight[0],2)+Math.pow(j-downRight[1],2));
                 if(distanceUpLeft>reduction && distanceUpRight>reduction && distanceDownLeft>reduction && distanceDownRight>reduction){
-                    //result[i][j].re=0;
-                    //result[i][j].im=0;
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
-                //ctx_helper.fillStyle = `rgb(${result[i][j].re},${result[i][j].re},${result[i][j].re})`;
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
@@ -274,8 +269,8 @@ function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode)
         return result;
     } 
     if(mode=="color_mode"){
-        const rows=result.red.length;
-        const cols=result.red[0].length;
+        const rows=result.fftResultArrayRed.length;
+        const cols=result.fftResultArrayRed[0].length;
     
         const upLeft=[0,0];
         const upRight=[rows,0];
@@ -295,14 +290,14 @@ function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode)
                 var distanceDownLeft=Math.sqrt(Math.pow(i-downLeft[0],2)+Math.pow(j-downLeft[1],2));
                 var distanceDownRight=Math.sqrt(Math.pow(i-downRight[0],2)+Math.pow(j-downRight[1],2));
                 if(distanceUpLeft>reduction && distanceUpRight>reduction && distanceDownLeft>reduction && distanceDownRight>reduction){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result.red[i][j].re},${result.green[i][j].re},${result.blue[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -340,8 +335,8 @@ function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
         return result;
     }
     if(mode=="color_mode"){
-        const rows=result.red.length;
-        const cols=result.red[0].length;
+        const rows=result.fftResultArrayRed.length;
+        const cols=result.fftResultArrayRed[0].length;
     
         const middleRow=Math.floor(rows/2);
         const middleCol=Math.floor(cols/2);
@@ -357,15 +352,15 @@ function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
             for(let j=0;j<cols;j++){
                 var distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 if(distance<reduction){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }
      
-                ctx_helper.fillStyle = `rgb(${result.red[i][j].re},${result.green[i][j].re},${result.blue[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -407,8 +402,8 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
         return result;
     }
     if(mode=="color_mode"){
-        const rows=result.red.length;
-        const cols=result.red[0].length;
+        const rows=result.fftResultArrayRed.length;
+        const cols=result.fftResultArrayRed[0].length;
     
         const upLeft=[0,0];
         const upRight=[rows,0];
@@ -428,14 +423,14 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
                 var distanceDownLeft=Math.sqrt(Math.pow(i-downLeft[0],2)+Math.pow(j-downLeft[1],2));
                 var distanceDownRight=Math.sqrt(Math.pow(i-downRight[0],2)+Math.pow(j-downRight[1],2));
                 if(distanceUpLeft<reduction || distanceUpRight<reduction || distanceDownLeft<reduction || distanceDownRight<reduction){
-                    result.red[i][j].re=0;
-                    result.red[i][j].im=0;
-                    result.green[i][j].re=0;
-                    result.green[i][j].im=0;
-                    result.blue[i][j].re=0;
-                    result.blue[i][j].im=0;
+                    result.fftResultArrayRed[i][j][0]=0;
+                    result.fftResultArrayRed[i][j][1]=0;
+                    result.fftResultArrayGreen[i][j][0]=0;
+                    result.fftResultArrayGreen[i][j][1]=0;
+                    result.fftResultArrayBlue[i][j][0]=0;
+                    result.fftResultArrayBlue[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result.red[i][j].re},${result.green[i][j].re},${result.blue[i][j].re})`;
+                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -481,8 +476,8 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
         return result;
     }
     if(mode=="color_mode"){
-        const rows=result.red.length;
-        const cols=result.red[0].length;
+        const rows=result.fftResultArrayRed.length;
+        const cols=result.fftResultArrayRed[0].length;
     
         const middleRow=Math.floor(rows/2);
         const middleCol=Math.floor(cols/2);
@@ -498,31 +493,31 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
             for(let j=0;j<cols;j++){
                 var distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 if(distance==0){
-                    result.red[i][j].re=result.red[i][j].re*0.5;
-                    result.red[i][j].im=result.red[i][j].im*0.5;
-                    result.green[i][j].re=result.green[i][j].re*0.5;
-                    result.green[i][j].im=result.green[i][j].im*0.5;
-                    result.blue[i][j].re=result.blue[i][j].re*0.5;
-                    result.blue[i][j].im=result.blue[i][j].im*0.5;
+                    result.fftResultArrayRed[i][j][0]=result.fftResultArrayRed[i][j][0]*0.5;
+                    result.fftResultArrayRed[i][j][1]=result.fftResultArrayRed[i][j][1]*0.5;
+                    result.fftResultArrayGreen[i][j][0]=result.fftResultArrayGreen[i][j][0]*0.5;
+                    result.fftResultArrayGreen[i][j][1]=result.fftResultArrayGreen[i][j][1]*0.5;
+                    result.fftResultArrayBlue[i][j][0]=result.fftResultArrayBlue[i][j][0]*0.5;
+                    result.fftResultArrayBlue[i][j][1]=result.fftResultArrayBlue[i][j][1]*0.5;
                 }
                 if(distance>0 && distance<=sharpenDistance){
                     var multiplier=(((distance*0.5)-0)*((4-0.5)/(sharpenDistance/2-0))+0.5);
-                    result.red[i][j].re=result.red[i][j].re*multiplier;
-                    result.red[i][j].im=result.red[i][j].im*multiplier;
-                    result.green[i][j].re=result.green[i][j].re*multiplier;
-                    result.green[i][j].im=result.green[i][j].im*multiplier;
-                    result.blue[i][j].re=result.blue[i][j].re*multiplier;
-                    result.blue[i][j].im=result.blue[i][j].im*multiplier;
+                    result.fftResultArrayRed[i][j][0]=result.fftResultArrayRed[i][j][0]*multiplier;
+                    result.fftResultArrayRed[i][j][1]=result.fftResultArrayRed[i][j][1]*multiplier;
+                    result.fftResultArrayGreen[i][j][0]=result.fftResultArrayGreen[i][j][0]*multiplier;
+                    result.fftResultArrayGreen[i][j][1]=result.fftResultArrayGreen[i][j][1]*multiplier;
+                    result.fftResultArrayBlue[i][j][0]=result.fftResultArrayBlue[i][j][0]*multiplier;
+                    result.fftResultArrayBlue[i][j][1]=result.fftResultArrayBlue[i][j][1]*multiplier;
                 }
                 if(distance>sharpenDistance){
-                    result.red[i][j].re=result.red[i][j].re*4;
-                    result.red[i][j].im=result.red[i][j].im*4;
-                    result.green[i][j].re=result.green[i][j].re*4;
-                    result.green[i][j].im=result.green[i][j].im*4;
-                    result.blue[i][j].re=result.blue[i][j].re*4;
-                    result.blue[i][j].im=result.blue[i][j].im*4;
+                    result.fftResultArrayRed[i][j][0]=result.fftResultArrayRed[i][j][0]*4;
+                    result.fftResultArrayRed[i][j][1]=result.fftResultArrayRed[i][j][1]*4;
+                    result.fftResultArrayGreen[i][j][0]=result.fftResultArrayGreen[i][j][0]*4;
+                    result.fftResultArrayGreen[i][j][1]=result.fftResultArrayGreen[i][j][1]*4;
+                    result.fftResultArrayBlue[i][j][0]=result.fftResultArrayBlue[i][j][0]*4;
+                    result.fftResultArrayBlue[i][j][1]=result.fftResultArrayBlue[i][j][1]*4;
                 }
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.red[i][j].re))*15},${Math.log(Math.abs(result.green[i][j].re))*15},${Math.log(Math.abs(result.blue[i][j].re))*15})`;
+                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }
@@ -554,8 +549,8 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
         return result;
     }
     if(mode=="color_mode"){
-        const rows = result.red.length;
-        const cols = result.red[0].length;
+        const rows = result.fftResultArrayRed.length;
+        const cols = result.fftResultArrayRed[0].length;
         const middleRow = Math.floor(rows / 2);
         const middleCol = Math.floor(cols / 2);
         var sigma=slider_value;
@@ -565,14 +560,14 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
                 const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
     
-                result.red[i][j].re *= filterValue;
-                result.red[i][j].im *= filterValue;
-                result.green[i][j].re *= filterValue;
-                result.green[i][j].im *= filterValue;
-                result.blue[i][j].re *= filterValue;
-                result.blue[i][j].im *= filterValue;
+                result.fftResultArrayRed[i][j][0] *= filterValue;
+                result.fftResultArrayRed[i][j][1] *= filterValue;
+                result.fftResultArrayGreen[i][j][0] *= filterValue;
+                result.fftResultArrayGreen[i][j][1] *= filterValue;
+                result.fftResultArrayBlue[i][j][0] *= filterValue;
+                result.fftResultArrayBlue[i][j][1] *= filterValue;
 
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.red[i][j].re))*15},${Math.log(Math.abs(result.green[i][j].re))*15},${Math.log(Math.abs(result.blue[i][j].re))*15})`;
+                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
                 ctx_helper.fillRect(i, j, 1, 1);
             }
         }

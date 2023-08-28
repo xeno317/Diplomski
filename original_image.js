@@ -91,7 +91,6 @@ function handleFileSelect(evt) {
                 }
                 var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
                 document.getElementById("starting_image").src=image1;
-                //ctx_helper.clearRect(0, 0, image.width, image.height);
             }
             if(mode=="color_mode"){
                 c_helper.width=image.width;
@@ -180,7 +179,6 @@ function image_FFT(){
         if(mode=="greyscale_mode"){
             for(let i=0;i<image.width;i++){
                 for(let j=0;j<image.height;j++){
-                    //ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15},${Math.log(Math.abs(result[i][j].re))*15})`;
                     ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
                     ctx_helper.fillRect(i, j, 1, 1);
                 }
@@ -189,7 +187,7 @@ function image_FFT(){
         if(mode=="color_mode"){
             for(let i=0;i<image.height;i++){ 
                 for(let j=0;j<image.width;j++){
-                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.red[i][j].re))*15},${Math.log(Math.abs(result.green[i][j].re))*15},${Math.log(Math.abs(result.blue[i][j].re))*15})`;
+                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
                     ctx_helper.fillRect(j,i, 1, 1);
                 }
             }
@@ -310,9 +308,7 @@ function invert_FFT(){
         if(mode=="greyscale_mode"){
             for(let i=0;i<image.width;i++){
                 for(let j=0;j<image.height;j++){
-                    //ctx_helper.fillStyle = `rgb(${Math.abs(resultRe[i][j].re)},${Math.abs(resultRe[i][j].re)},${Math.abs(resultRe[i][j].re)})`;
                     ctx_helper.fillStyle = `rgb(${Math.abs(resultRe[i][j])},${Math.abs(resultRe[i][j])},${Math.abs(resultRe[i][j])})`;
-                    //ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(resultRe[i][j].re))*15},${Math.log(Math.abs(resultRe[i][j].re))*15},${Math.log(Math.abs(resultRe[i][j].re))*15})`;
                     ctx_helper.fillRect(i, j, 1, 1);
                 }
             }
@@ -320,7 +316,7 @@ function invert_FFT(){
         if(mode=="color_mode"){
             for(let i=0;i<image.height;i++){
                 for(let j=0;j<image.width;j++){
-                    ctx_helper.fillStyle = `rgb(${Math.abs(resultRe.red[i][j].re)},${Math.abs(resultRe.green[i][j].re)},${Math.abs(resultRe.blue[i][j].re)})`;
+                    ctx_helper.fillStyle = `rgb(${Math.abs(resultRe.inverseFFTArrayRed[i][j])},${Math.abs(resultRe.inverseFFTArrayGreen[i][j])},${Math.abs(resultRe.inverseFFTArrayBlue[i][j])})`;
                     ctx_helper.fillRect(j, i, 1, 1);
                 }
             }
