@@ -9,10 +9,6 @@ self.onmessage = function(event) {
   
   function transform2D(array) {
     
-    console.log("array3");
-    for(let i=0;i<array.length;i++){
-      console.log(array[i]);
-    }
     if(mode=="greyscale_mode"){
       var shiftedFFT;
       var flatFFTResult;
@@ -58,10 +54,6 @@ self.onmessage = function(event) {
                 const index = i * array[0].length + j;
                 inverseFFTArray[i][j] = flatFFTResult[index] / totalElements;
             }
-        }
-        console.log("array4");
-        for(let i=0;i<inverseFFTArray.length;i++){
-          console.log(inverseFFTArray[i]);
         }
         self.postMessage(inverseFFTArray);
       }

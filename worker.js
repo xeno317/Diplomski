@@ -12,9 +12,8 @@ self.onmessage = function(event) {
         const flatInput=array.flat();
         const realPart=flatInput.slice();
         const imagPart=newArrayOfZeros(flatInput.length);
-  
-        transform(realPart,imagPart);
 
+        transform(realPart,imagPart);
         const fftResultArray = new Array(array.length).fill(0).map(() => new Array(array[0].length).fill(0));
         
         for (let i = 0; i < array.length; i++) {

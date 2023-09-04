@@ -91,6 +91,7 @@ function handleFileSelect(evt) {
                 }
                 var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
                 document.getElementById("starting_image").src=image1;
+                ctx_helper.clearRect(0, 0, image.width, image.height);
             }
             if(mode=="color_mode"){
                 c_helper.width=image.width;
@@ -248,9 +249,6 @@ function reduce_FFT(){
                 case 'Sharpen':
                     result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
                     break;
-                case 'Gauss low pass':
-                    result1=gaussLowPass(result,image.width,image.height,ctx_helper);
-                    break;
             }
         }
     }
@@ -268,6 +266,10 @@ function reduce_FFT(){
                     break;
                 case 'Gauss low pass':
                     result1=gaussLowPass(result1,ctx_helper,slider_value,mode);
+                    break;
+                case 'Gauss high pass':
+                    result1=gaussHighPass(result1,ctx_helper,slider_value,mode);
+                    break;
             }
         }
         if(shape=="rect"){
@@ -280,6 +282,12 @@ function reduce_FFT(){
                     break;
                 case 'Sharpen':
                     result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    break;
+                case 'Gauss low pass':
+                    result1=gaussLowPass(result1,ctx_helper,slider_value,mode);
+                    break;
+                case 'Gauss high pass':
+                    result1=gaussHighPass(result1,ctx_helper,slider_value,mode);
                     break;
             }
         }
@@ -308,7 +316,7 @@ function invert_FFT(){
         if(mode=="greyscale_mode"){
             for(let i=0;i<image.width;i++){
                 for(let j=0;j<image.height;j++){
-                    ctx_helper.fillStyle = `rgb(${Math.abs(resultRe[i][j])},${Math.abs(resultRe[i][j])},${Math.abs(resultRe[i][j])})`;
+                    ctx_helper.fillStyle = `rgb(${resultRe[i][j]},${resultRe[i][j]},${resultRe[i][j]})`;
                     ctx_helper.fillRect(i, j, 1, 1);
                 }
             }

@@ -574,5 +574,82 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
     
         return result;
     }
+    
+}
+function gaussHighPass(result,ctx_helper,slider_value,mode){
+    if(mode=="greyscale_mode"){
+        const rows = result.length;
+        const cols = result[0].length;
+        const middleRow = Math.floor(rows / 2);
+        const middleCol = Math.floor(cols / 2);
+        var sigma = slider_value;
 
+        const filteredResult = [];
+
+        for (let i = 0; i < rows; i++) {
+            filteredResult[i] = [];
+            for (let j = 0; j < cols; j++) {
+                const distance = Math.sqrt(Math.pow(i - middleRow, 2) + Math.pow(j - middleCol, 2));
+                const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
+                filteredResult[i][j] = [
+                    result[i][j][0] * filterValue,
+                    result[i][j][1] * filterValue
+                ];
+            }
+        }
+
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                result[i][j][0] -= filteredResult[i][j][0];
+                result[i][j][1] -= filteredResult[i][j][1];
+                
+                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0])) * 15},${Math.log(Math.abs(result[i][j][0])) * 15},${Math.log(Math.abs(result[i][j][0])) * 15})`;
+                ctx_helper.fillRect(i, j, 1, 1);
+            }
+        }
+        return result;
+    }
+    if(mode=="color_mode"){
+        const rows = result.fftResultArrayRed.length;
+        const cols = result.fftResultArrayRed[0].length;
+        const middleRow = Math.floor(rows / 2);
+        const middleCol = Math.floor(cols / 2);
+        var sigma=slider_value;
+
+        const filteredResult=[];
+    
+        for (let i = 0; i < rows; i++) {
+            filteredResult[i]=[];
+            for (let j = 0; j < cols; j++) {
+                const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
+                const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
+                filteredResult[i][j]=[
+                result.fftResultArrayRed[i][j][0] *= filterValue,
+                result.fftResultArrayRed[i][j][1] *= filterValue,
+                result.fftResultArrayGreen[i][j][0] *= filterValue,
+                result.fftResultArrayGreen[i][j][1] *= filterValue,
+                result.fftResultArrayBlue[i][j][0] *= filterValue,
+                result.fftResultArrayBlue[i][j][1] *= filterValue
+                ];
+            }
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
+                    const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
+        
+                    result.fftResultArrayRed[i][j][0] *= filterValue;
+                    result.fftResultArrayRed[i][j][1] *= filterValue;
+                    result.fftResultArrayGreen[i][j][0] *= filterValue;
+                    result.fftResultArrayGreen[i][j][1] *= filterValue;
+                    result.fftResultArrayBlue[i][j][0] *= filterValue;
+                    result.fftResultArrayBlue[i][j][1] *= filterValue;
+    
+                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
+                    ctx_helper.fillRect(i, j, 1, 1);
+                }
+            }
+        }
+    
+        return result;
+    }
 }
