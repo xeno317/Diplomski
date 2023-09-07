@@ -97,7 +97,6 @@ html{
     position: absolute;
     left: 0;
     bottom: 0;
-    visibility: hidden;
 }
 .slidecontainer{
     display: flex;

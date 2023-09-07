@@ -21,7 +21,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 });
 
 var mode="greyscale_mode";
-var type="standard";
+var type="inverted";
 var shape="circle";
 var c;
 var ctx;
@@ -35,8 +35,12 @@ var canvas3;
 var ctx3;
 var image;
 var data=[];
+var result1;
+var resultRe;
 
 function handleFileSelect(evt) {
+    result1=null;
+    resultRe=null;
     data=[];
     c_helper=document.getElementById("helperCanvas");
     ctx_helper=c_helper.getContext("2d",{ willReadFrequently: true });
@@ -155,6 +159,12 @@ function handleFileSelect(evt) {
 var result;
 var typeNow=type;
 function image_FFT(){
+    let get=document.getElementById("starting_image");
+    let atr=get.getAttribute('src');
+    if(atr===null || atr===''){
+        alert("Starting Image not Selected!");
+        return;
+    }
     if(document.getElementById("fft_image").src){
         document.getElementById("fft_image").src='';
     }
@@ -200,8 +210,20 @@ function image_FFT(){
    
     
 }
-var result1;
 function reduce_FFT(){
+    result1=null;
+    let get=document.getElementById("starting_image");
+    let atr=get.getAttribute('src');
+    let getFFT=document.getElementById("fft_image");
+    let atrFFT=getFFT.getAttribute('src');
+    if(atr===null || atr===''){
+        alert("Starting Image not Selected!");
+        return;
+    }
+    if(atrFFT===null || atrFFT===''){
+        alert("No FFT Results!");
+        return;
+    }
     document.getElementById("ifft").innerHTML='';
     if(document.getElementById("reduction_result_image").src){
         document.getElementById("reduction_result_image").src='';
@@ -233,9 +255,6 @@ function reduce_FFT(){
                 case 'High pass':
                     result1=high_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
-                case 'Sharpen':
-                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
-                    break;
             }
         }
         if(shape=="rect"){
@@ -245,9 +264,6 @@ function reduce_FFT(){
                     break;
                 case 'High pass':
                     result1=high_pass(result1,image.width,image.height,ctx_helper,slider_value,mode);
-                    break;
-                case 'Sharpen':
-                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value);
                     break;
             }
         }
@@ -299,8 +315,25 @@ function reduce_FFT(){
 
 }
 
-var resultRe;
 function invert_FFT(){
+    let get=document.getElementById("starting_image");
+    let atr=get.getAttribute('src');
+    let getFFT=document.getElementById("fft_image");
+    let atrFFT=getFFT.getAttribute('src');
+    let getRed=document.getElementById("reduction_result_image");
+    let atrRed=getRed.getAttribute('src');
+    if(atr===null || atr===''){
+        alert("Starting Image not Selected!");
+        return;
+    }
+    if(atrFFT===null || atrFFT===''){
+        alert("No FFT Results!");
+        return;
+    }
+    if(atrRed===null || atrRed===''){
+        alert("No Reduction Results!");
+        return;
+    }
     const worker1 = new Worker('workerifft.js');
     c_helper=document.getElementById("helperCanvas");
     ctx_helper=c_helper.getContext("2d");

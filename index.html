@@ -13,21 +13,20 @@
 <body>
     <label class="title">Fast Fourier Transform Demonstration</label>
     <div class="radioContainer">
-        <div>
-            <input type="radio" id="color_mode" name="mode" onclick="setMode(id)" value="color">
-            <label for="color_mode">Color Mode</label>
-          </div>
-
-          <div>
-            <input type="radio" id="greyscale_mode" name="mode" onclick="setMode(id)" value="greyscale" checked>
-            <label for="greyscale_mode">Greyscale mode</label>
-          </div>      
+      <div>
+        <input type="radio" id="greyscale_mode" name="mode" onclick="setMode(id)" value="greyscale" checked>
+        <label for="greyscale_mode">Greyscale mode</label>
+      </div>    
+      <div>
+          <input type="radio" id="color_mode" name="mode" onclick="setMode(id)" value="color">
+          <label for="color_mode">Color Mode</label>
+      </div>     
     </div>
 
     <div class="image_containers">
         <div class="box">
           <label id="box_title">Starting Image</label>
-          <img id="starting_image">
+          <img id="starting_image" loading="lazy">
         </div>
         <div class="box">
           <label id="box_title">FFT Result</label>
@@ -56,27 +55,28 @@
             <div class="results_type">
                 <label>FFT Results Type:</label>
                 <div class="results_type_container">
-                    <div>
-                        <input type="radio" id="standard" name="type" value="standard" onclick="setType(id)" checked>
-                        <label for="standard">Standard</label>
-                      </div>
-                      <div>
-                        <input type="radio" id="inverted" name="type" value="inverted" onclick="setType(id)">
-                        <label for="inverted">Inverted</label>
-                      </div>      
+                  <div>
+                    <input type="radio" id="inverted" name="type" value="inverted" onclick="setType(id)" checked>
+                    <label for="inverted">Inverted</label>
+                  </div>      
+                  <div>
+                      <input type="radio" id="standard" name="type" value="standard" onclick="setType(id)">
+                      <label for="standard">Standard</label>
+                  </div>
+                      
                 </div>
             </div>
             <div class="filter_shape">
                 <label class="reduction_shape_label">Reduction shape:</label>
                 <div class="filter_shape_container">
-                    <div>
-                        <input type="radio" id="rect" name="shape" value="rectangle" onclick="setShape(id)">
-                        <label for="rect">Rectangle</label>
-                      </div>
-                      <div>
-                        <input type="radio" id="circle" name="shape" value="circle" onclick="setShape(id)" checked>
-                        <label for="circle">Circle</label>
-                      </div>      
+                  <div>
+                    <input type="radio" id="circle" name="shape" value="circle" onclick="setShape(id)" checked>
+                    <label for="circle">Circle</label>
+                  </div>      
+                  <div>
+                      <input type="radio" id="rect" name="shape" value="rectangle" onclick="setShape(id)">
+                      <label for="rect">Rectangle</label>
+                  </div>    
                 </div>
             </div>
             <div class="select_container">
