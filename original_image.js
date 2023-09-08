@@ -162,7 +162,7 @@ function image_FFT(){
     let get=document.getElementById("starting_image");
     let atr=get.getAttribute('src');
     if(atr===null || atr===''){
-        alert("Starting Image not Selected!");
+        alert("Početna slika nije odabrana!");
         return;
     }
     if(document.getElementById("fft_image").src){
@@ -217,11 +217,11 @@ function reduce_FFT(){
     let getFFT=document.getElementById("fft_image");
     let atrFFT=getFFT.getAttribute('src');
     if(atr===null || atr===''){
-        alert("Starting Image not Selected!");
+        alert("Početna slika nije odabrana!");
         return;
     }
     if(atrFFT===null || atrFFT===''){
-        alert("No FFT Results!");
+        alert("FFT nije proveden!");
         return;
     }
     document.getElementById("ifft").innerHTML='';
@@ -245,24 +245,24 @@ function reduce_FFT(){
         result1=JSON.parse(JSON.stringify(result));
     }
     var selected_filter = document.getElementById("filter");
-    var text = selected_filter.options[selected_filter.selectedIndex].text;
+    var text = selected_filter.options[selected_filter.selectedIndex].value;
     if(type=="standard"){
         if(shape=="circle"){
             switch(text){
-                case 'Low pass':
+                case 'low_pass':
                     result1=low_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
-                case 'High pass':
+                case 'high_pass':
                     result1=high_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
             }
         }
         if(shape=="rect"){
             switch(text){
-                case 'Low pass':
+                case 'low_pass':
                     result1=low_pass(result1,image.width,image.height,ctx_helper,reductionx,reductiony,mode);
                     break;
-                case 'High pass':
+                case 'high_pass':
                     result1=high_pass(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
             }
@@ -271,38 +271,38 @@ function reduce_FFT(){
     if(type=="inverted"){
         if(shape=="circle"){
             switch(text){
-                case 'Low pass':
+                case 'low_pass':
                     result1=low_pass_circle(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
-                case 'High pass':
+                case 'high_pass':
                     result1=high_pass_circle(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
-                case 'Sharpen':
+                case 'sharpen':
                     result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
-                case 'Gauss low pass':
+                case 'gauss_low_pass':
                     result1=gaussLowPass(result1,ctx_helper,slider_value,mode);
                     break;
-                case 'Gauss high pass':
+                case 'gauss_high_pass':
                     result1=gaussHighPass(result1,ctx_helper,slider_value,mode);
                     break;
             }
         }
         if(shape=="rect"){
             switch(text){
-                case 'Low pass':
+                case 'low_pass':
                     result1=low_pass_inverted(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
-                case 'High pass':
+                case 'high_pass':
                     result1=high_pass_inverted(result1,image.width,image.height,ctx_helper,reductionx,reductiony,mode);
                     break;
-                case 'Sharpen':
+                case 'sharpen':
                     result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
-                case 'Gauss low pass':
+                case 'gauss_low_pass':
                     result1=gaussLowPass(result1,ctx_helper,slider_value,mode);
                     break;
-                case 'Gauss high pass':
+                case 'gauss_high_pass':
                     result1=gaussHighPass(result1,ctx_helper,slider_value,mode);
                     break;
             }
@@ -323,15 +323,15 @@ function invert_FFT(){
     let getRed=document.getElementById("reduction_result_image");
     let atrRed=getRed.getAttribute('src');
     if(atr===null || atr===''){
-        alert("Starting Image not Selected!");
+        alert("Početna slika nije odabrana!");
         return;
     }
     if(atrFFT===null || atrFFT===''){
-        alert("No FFT Results!");
+        alert("FFT nije proveden!");
         return;
     }
     if(atrRed===null || atrRed===''){
-        alert("No Reduction Results!");
+        alert("Filtar nije primjenjen!");
         return;
     }
     const worker1 = new Worker('workerifft.js');
@@ -382,6 +382,20 @@ function setMode(value){
 
 }
 function setType(value){
+    const filters=document.getElementById("filter");
+    const hide1=filters.querySelector("option[value='sharpen");
+    const hide2=filters.querySelector("option[value='gauss_low_pass");
+    const hide3=filters.querySelector("option[value='gauss_high_pass");
+    if(value=="standard"){ 
+        hide1.style.display="none";
+        hide2.style.display="none";
+        hide3.style.display="none";
+    }
+    if(value=="inverted"){
+        hide1.style.display="block";
+        hide2.style.display="block";
+        hide3.style.display="block";
+    }
     type=value;
 }
 function setShape(value){

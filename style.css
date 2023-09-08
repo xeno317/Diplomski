@@ -10,7 +10,7 @@ html{
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 10px;
-    min-height:540px;
+    min-height:24vw;
 }
 .box{
     color: whitesmoke;
@@ -34,8 +34,11 @@ html{
 #file{
     background-color: rgba(0, 0, 0, 0.1);
     padding: 0.6rem;
-    margin: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
     border-radius: 5px;
+    width: 69%;
+    margin-left: 3rem;
 }
 ::file-selector-button{
     border-radius: 5px;
@@ -76,7 +79,7 @@ html{
     color: whitesmoke;
     font-weight: bold;
     transition: 0.3s;
-    margin: 15px;
+    margin-top: 15px;
 }
 .reduction_button:hover{
     background-color: #04AA6D;
@@ -89,6 +92,8 @@ html{
     color: whitesmoke;
     font-weight: bold;
     transition: 0.3s;
+    display: flex;
+    margin-top: 15px;
 }
 .invert_button:hover{
     background-color: #04AA6D;
@@ -118,10 +123,10 @@ html{
     background-color: #333;
     border-radius: 5px;
     color: whitesmoke;
-    width: 54%;
+    width: 69%;
     position: relative;
     padding: 10px;
-    margin: 3rem;
+    margin-left: 3rem;
 }
 .res{
     padding: 2px;
@@ -133,16 +138,16 @@ html{
     padding: 2px;
 }
 .res::before{
-    content: "Image resolution: ";
+    content: "Rezolucija slike: ";
 }
 .fft::before{
-   content: "FFT time: ";
+   content: "Trajanje FFT: ";
 }
 .fft::after{
     content: " ms";
 }
 .ifft::before{
-    content: "Inverse FFT time: ";
+    content: "Trajanje IFFT: ";
 }
 .ifft::after{
     content: " ms";
@@ -154,8 +159,15 @@ html{
 .options{
     border: none;
     flex: 0 0 25%;
-    max-width: 35%;
+    max-width: 25%;
     position: relative;
+    border: none;
+    position: relative;
+    box-sizing: border-box;
+    align-items: center;
+}
+#options0{
+    padding: 20px;
 }
 #options1{
     background-color: #333;
@@ -163,7 +175,27 @@ html{
     margin-top: 10px;
     color:whitesmoke;
     padding: 20px;
-    max-width: 23%;
+    height:min-content;
+    max-width: 20%;
+    margin-right: 5%;
+}
+#options2{
+    background-color: #333;
+    border-radius: 5px;
+    margin-top: 10px;
+    color:whitesmoke;
+    padding: 20px;
+    max-width: 20%;
+    margin-right: 5%;
+}
+#options3{
+    background-color: #333;
+    border-radius: 5px;
+    margin-top: 10px;
+    color:whitesmoke;
+    padding: 20px;
+    height: min-content;
+    max-width: 20%;
 }
 .results_type{
     padding-top: 15px;
@@ -187,4 +219,15 @@ html{
     margin-left: 10px;
 }#buttton_container{
     padding-top: 20px;
+}
+.radioContainer{
+    background-color:#333;
+    border-radius: 5px;
+    padding: 0.6rem;
+    color: whitesmoke;
+    width: 69%;
+    margin-left: 3rem;
+}
+.title{
+    margin-left: 0.5rem;
 }

@@ -1,108 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <script src="original_image.js"></script>
-    <script src="filters.js"></script>
-    <script src="node_modules/mathjs/lib/browser/math.js" type="text/javascript"></script>
-    <title>FFT Demo</title>
-</head>
-<body>
-    <label class="title">Fast Fourier Transform Demonstration</label>
-    <div class="radioContainer">
-      <div>
-        <input type="radio" id="greyscale_mode" name="mode" onclick="setMode(id)" value="greyscale" checked>
-        <label for="greyscale_mode">Greyscale mode</label>
-      </div>    
-      <div>
-          <input type="radio" id="color_mode" name="mode" onclick="setMode(id)" value="color">
-          <label for="color_mode">Color Mode</label>
-      </div>     
-    </div>
-
-    <div class="image_containers">
-        <div class="box">
-          <label id="box_title">Starting Image</label>
-          <img id="starting_image" loading="lazy">
-        </div>
-        <div class="box">
-          <label id="box_title">FFT Result</label>
-          <img id="fft_image">
-        </div>
-        <div class="box">
-          <label id="box_title">Reduction Result</label>
-          <img id="reduction_result_image">
-        </div>
-        <div class="box">
-          <label id="box_title">Inverse FFT Result</label>
-          <img id="inverse_fft_image">
-        </div>
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="style.css">
+      <script src="original_image.js"></script>
+      <script src="filters.js"></script>
+      <script src="node_modules/mathjs/lib/browser/math.js" type="text/javascript"></script>
+      <title>FFT Demo</title>
+   </head>
+   <body>
+      <label class="title">Korištenje brzih Fourierovih transformacija za obradu slike - Diplomski rad - Sandro Mikulan</label>
+      <div class="image_containers">
+         <div class="box">
+            <div class="content">
+               <label id="box_title">Početna slika</label>
+               <img id="starting_image" loading="lazy">
+            </div>
+         </div>
+         <div class="box">
+            <div class="content">
+               <label id="box_title">FFT rezultat</label>
+               <img id="fft_image">
+            </div>
+         </div>
+         <div class="box">
+            <div class="content">
+               <label id="box_title">Rezultat filtriranja</label>
+               <img id="reduction_result_image">
+            </div>
+         </div>
+         <div class="box">
+            <div class="content">
+               <label id="box_title">Inverzni FFT rezultat</label>
+               <img id="inverse_fft_image">
+            </div>
+         </div>
       </div>
-    <div class="options_container">
-        <div class="options">
-            <input type="file" id="file"/>
+      <div class="options_container">
+         <div class="options" id="options0">
+            <div class="radioContainer">
+               <div>
+                  <input type="radio" id="greyscale_mode" name="mode" onclick="setMode(id)" value="greyscale" checked>
+                  <label for="greyscale_mode">Crno-bijele slike</label>
+               </div>
+               <div>
+                  <input type="radio" id="color_mode" name="mode" onclick="setMode(id)" value="color">
+                  <label for="color_mode">Slike u boji</label>
+               </div>
+            </div>
+            <div>
+               <input type="file" id="file"/>
+            </div>
             <div class="results">
-                <label id="res" class="res"></label>
-                <label id="fft" class="fft"></label>
-                <label id="ifft" class="ifft"></label>
+               <label id="res" class="res"></label>
+               <label id="fft" class="fft"></label>
+               <label id="ifft" class="ifft"></label>
             </div>
-        </div>
-        <div class="options" id="options1">
-            <label>Reduction Options</label>
+         </div>
+         <div class="options" id="options1">
+            <label>FFT opcije</label>
             <div class="results_type">
-                <label>FFT Results Type:</label>
-                <div class="results_type_container">
+               <label>Položaj ishodišta:</label>
+               <div class="results_type_container">
                   <div>
-                    <input type="radio" id="inverted" name="type" value="inverted" onclick="setType(id)" checked>
-                    <label for="inverted">Inverted</label>
-                  </div>      
-                  <div>
-                      <input type="radio" id="standard" name="type" value="standard" onclick="setType(id)">
-                      <label for="standard">Standard</label>
+                     <input type="radio" id="inverted" name="type" value="inverted" onclick="setType(id)" checked>
+                     <label for="inverted">Središte</label>
                   </div>
-                      
-                </div>
+                  <div>
+                     <input type="radio" id="standard" name="type" value="standard" onclick="setType(id)">
+                     <label for="standard">Kutovi</label>
+                  </div>
+               </div>
             </div>
+            <button class="start_button" onclick="image_FFT()">1. Start</button>
+         </div>
+         <div class="options" id="options2">
+          <label>Filtar opcije</label>
             <div class="filter_shape">
-                <label class="reduction_shape_label">Reduction shape:</label>
-                <div class="filter_shape_container">
+               <label class="reduction_shape_label">Oblik filtra:</label>
+               <div class="filter_shape_container">
                   <div>
-                    <input type="radio" id="circle" name="shape" value="circle" onclick="setShape(id)" checked>
-                    <label for="circle">Circle</label>
-                  </div>      
+                     <input type="radio" id="circle" name="shape" value="circle" onclick="setShape(id)" checked>
+                     <label for="circle">Krug</label>
+                  </div>
                   <div>
-                      <input type="radio" id="rect" name="shape" value="rectangle" onclick="setShape(id)">
-                      <label for="rect">Rectangle</label>
-                  </div>    
-                </div>
+                     <input type="radio" id="rect" name="shape" value="rectangle" onclick="setShape(id)">
+                     <label for="rect">Kvadrat</label>
+                  </div>
+               </div>
             </div>
             <div class="select_container">
-                <label for="filter">Filter:</label>
-                <select name="filter" id="filter">
-                    <option value="low_pass">Low pass</option>
-                    <option value="high_pass">High pass</option>
-                    <option value="sharpen">Sharpen</option>
-                    <option value="gauss_low_pass">Gauss low pass</option>
-                    <option value="gauss_high_pass">Gauss high pass</option>
-                </select>
+               <label for="filter">Filtar:</label>
+               <select name="filter" id="filter">
+                  <option value="low_pass">Nisko-frekvencijski</option>
+                  <option value="high_pass">Viskoko-frekvencijski</option>
+                  <option value="sharpen">Izoštravanje</option>
+                  <option value="gauss_low_pass">Gauss NF</option>
+                  <option value="gauss_high_pass">Gauss VF</option>
+               </select>
             </div>
             <div class="slidecontainer">
-            <label class="reduction_label" for="myRange">Reduction Amount:</label>
-            <input type="range" min="1" max="100" value="50" class="slider" id="myRange" oninput="this.nextElementSibling.value = this.value">
-            <form>
-              <input type="number" id="slider_input" name="slider_input" placeholder="50">
-            </form>
-        </div>
-          <button class="start_button" onclick="image_FFT()">1. Start</button>
-          <button class="reduction_button" onclick="reduce_FFT()" id="reduction_button">2. Reduce</button>
-          <button class="invert_button" onclick="invert_FFT()">3. Invert</button>
-        </div>
-       
-    </div>
-   
-    <canvas id="helperCanvas"></canvas>
-</body>
+               <label class="reduction_label" for="myRange">Veličina filtra:</label>
+               <input type="range" min="1" max="100" value="50" class="slider" id="myRange" oninput="this.nextElementSibling.value = this.value">
+               <form>
+                  <input type="number" id="slider_input" name="slider_input" placeholder="50">
+               </form>
+            </div>
+            <button class="reduction_button" onclick="reduce_FFT()" id="reduction_button">2. Filtriranje</button>
+         </div>
+         <div class="optipns" id="options3">
+          <label>Inverzna transformacija</label>
+          <button class="invert_button" onclick="invert_FFT()">3. Invertiranje</button>  
+         </div>
+      </div>
+      <canvas id="helperCanvas"></canvas>
+   </body>
 </html>
