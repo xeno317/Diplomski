@@ -9,6 +9,7 @@ self.onmessage = function(event) {
     
     function transform2D(array) {
       if(mode=="greyscale_mode"){
+        
         const flatInput=array.flat();
         const realPart=flatInput.slice();
         const imagPart=newArrayOfZeros(flatInput.length);
@@ -43,6 +44,7 @@ self.onmessage = function(event) {
         if(type=="standard"){
           self.postMessage(fftResultArray);
         }
+        
       }
       if(mode=="color_mode"){
         const redChannel = array.map(row =>

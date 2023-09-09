@@ -188,8 +188,8 @@ function image_FFT(){
         document.getElementById("fft").innerHTML=math.round(end-start,5);
         ctx_helper.clearRect(0, 0, image.width, image.height);
         if(mode=="greyscale_mode"){
-            for(let i=0;i<image.width;i++){
-                for(let j=0;j<image.height;j++){
+            for(let i=0;i<image.height;i++){
+                for(let j=0;j<image.width;j++){
                     ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
                     ctx_helper.fillRect(i, j, 1, 1);
                 }

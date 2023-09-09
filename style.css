@@ -1,16 +1,20 @@
 html{
-    font: 0.85vw arial !important;
+    font: 0.8vw arial !important;
 }
 .title{
     color: #333;
     font-weight: bold;
+}
+input[type='radio']{
+    width: 0.75vw;
+    height: 0.75vw;
 }
 .image_containers{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 10px;
-    min-height:24vw;
+    min-height:26vw;
 }
 .box{
     color: whitesmoke;
@@ -39,7 +43,7 @@ html{
     border-radius: 5px;
     width: 69%;
     margin-left: 3rem;
-    font: 0.85vw arial !important;
+    font: 0.8vw arial !important;
 }
 ::file-selector-button{
     border-radius: 5px;
@@ -48,7 +52,7 @@ html{
     background-color: #333;
     padding: 0.6rem;
     color: whitesmoke;
-    font: 0.85vw arial !important;
+    font: 0.8vw arial !important;
     transition: 0.3s;
 }
 ::file-selector-button:hover{
@@ -60,7 +64,7 @@ html{
     border: none;
     padding:0.6rem;
     color: whitesmoke;
-    font: 0.85vw arial;
+    font: 0.8vw arial;
     transition: 0.3s;
 }
 #box_title{
@@ -80,7 +84,7 @@ html{
     color: whitesmoke;
     transition: 0.3s;
     margin-top: 15px;
-    font: 0.85vw arial !important;
+    font: 0.8vw arial !important;
 }
 .reduction_button:hover{
     background-color: #04AA6D;
@@ -94,7 +98,7 @@ html{
     transition: 0.3s;
     display: flex;
     margin-top: 15px;
-    font: 0.85vw arial !important;
+    font: 0.8vw arial !important;
 }
 .invert_button:hover{
     background-color: #04AA6D;
@@ -113,7 +117,7 @@ html{
 
 #slider_input{
     width:2vw;
-    height: 2.5vh;
+    height: 1.3vw;
     padding: 4%;
     margin-left: 5%;
     text-align: center;
@@ -123,6 +127,7 @@ html{
 }
 .slider{
     width: 6.7vw;
+    height: 1vh;
 }
 .results{
     display: grid;
@@ -131,7 +136,7 @@ html{
     color: whitesmoke;
     width: 69%;
     position: relative;
-    padding: 10px;
+    padding: 0.6rem;
     margin-left: 3rem;
 }
 .res{
@@ -223,7 +228,7 @@ html{
     border-radius: 5px;
     padding: 1%;
     margin-left: 10px;
-    font: 0.80vw arial !important;
+    font: 0.8vw arial !important;
 }
 #buttton_container{
     padding-top: 20px;

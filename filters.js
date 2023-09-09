@@ -446,7 +446,6 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
         const middleRow=Math.floor(rows/2);
         const middleCol=Math.floor(cols/2);
         if(width<=height){
-            console.log(reduction);
             reduction=(width*(reduction/100))/2;
             var sharpenDistance=width*(reduction/100);
         }
@@ -484,11 +483,11 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
         const middleCol=Math.floor(cols/2);
         if(width<=height){
             reduction=(width*(reduction/100))/2;
-            var sharpenDistance=width/8*3;
+            var sharpenDistance=width*(reduction/100);
         }
         if(width>height){
             reduction=(height*(reduction/100))/2;
-            var sharpenDistance=height/8*3;
+            var sharpenDistance=height*(reduction/100);
         }
         for(let i=0;i<rows;i++){
             for(let j=0;j<cols;j++){
