@@ -1,5 +1,5 @@
 html{
-    font: 1em arial;
+    font: 0.85vw arial !important;
 }
 .title{
     color: #333;
@@ -39,6 +39,7 @@ html{
     border-radius: 5px;
     width: 69%;
     margin-left: 3rem;
+    font: 0.85vw arial !important;
 }
 ::file-selector-button{
     border-radius: 5px;
@@ -47,7 +48,7 @@ html{
     background-color: #333;
     padding: 0.6rem;
     color: whitesmoke;
-    font-weight: bold;
+    font: 0.85vw arial !important;
     transition: 0.3s;
 }
 ::file-selector-button:hover{
@@ -59,7 +60,7 @@ html{
     border: none;
     padding:0.6rem;
     color: whitesmoke;
-    font-weight: bold;
+    font: 0.85vw arial;
     transition: 0.3s;
 }
 #box_title{
@@ -77,9 +78,9 @@ html{
     border: none;
     padding:0.6rem;
     color: whitesmoke;
-    font-weight: bold;
     transition: 0.3s;
     margin-top: 15px;
+    font: 0.85vw arial !important;
 }
 .reduction_button:hover{
     background-color: #04AA6D;
@@ -90,10 +91,10 @@ html{
     border: none;
     padding:0.6rem;
     color: whitesmoke;
-    font-weight: bold;
     transition: 0.3s;
     display: flex;
     margin-top: 15px;
+    font: 0.85vw arial !important;
 }
 .invert_button:hover{
     background-color: #04AA6D;
@@ -111,12 +112,17 @@ html{
 }
 
 #slider_input{
-    width:20%;
+    width:2vw;
+    height: 2.5vh;
     padding: 4%;
     margin-left: 5%;
     text-align: center;
     border:none;
     border-radius: 3px;
+    font: 0.75vw arial !important;
+}
+.slider{
+    width: 6.7vw;
 }
 .results{
     display: grid;
@@ -172,7 +178,7 @@ html{
 #options1{
     background-color: #333;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-top: 20px;
     color:whitesmoke;
     padding: 20px;
     height:min-content;
@@ -182,7 +188,7 @@ html{
 #options2{
     background-color: #333;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-top: 20px;
     color:whitesmoke;
     padding: 20px;
     max-width: 20%;
@@ -191,7 +197,7 @@ html{
 #options3{
     background-color: #333;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-top: 20px;
     color:whitesmoke;
     padding: 20px;
     height: min-content;
@@ -217,7 +223,9 @@ html{
     border-radius: 5px;
     padding: 1%;
     margin-left: 10px;
-}#buttton_container{
+    font: 0.80vw arial !important;
+}
+#buttton_container{
     padding-top: 20px;
 }
 .radioContainer{
