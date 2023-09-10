@@ -1,5 +1,3 @@
-importScripts('node_modules/mathjs/lib/browser/math.js');
-
 self.onmessage = function(event) {
     var data=event.data.data;
     const mode=event.data.mode;
@@ -17,7 +15,7 @@ self.onmessage = function(event) {
       if(type=="inverted"){
         const numRows=array.length;
         const numCols=array[0].length;
-        shiftedFFT = math.zeros([numRows, numCols]);
+        shiftedFFT = new Array(numRows).fill(0).map(() => new Array(numCols).fill(0));
         const halfNumRows = Math.floor(numRows / 2);
         const halfNumCols = Math.floor(numCols / 2);
           for (let i = 0; i < numRows; i++) {
@@ -84,10 +82,9 @@ self.onmessage = function(event) {
         const numRows=redChannel.length;
         const numCols=redChannel[0].length;
 
-        shiftedFFTRed = math.zeros([numRows, numCols]);
-        shiftedFFTGreen = math.zeros([numRows, numCols]);
-        shiftedFFTBlue = math.zeros([numRows, numCols]);
-
+        shiftedFFTRed = new Array(numRows).fill(0).map(() => new Array(numCols).fill(0));
+        shiftedFFTGreen = new Array(numRows).fill(0).map(() => new Array(numCols).fill(0));
+        shiftedFFTBlue = new Array(numRows).fill(0).map(() => new Array(numCols).fill(0));
         const halfNumRows = Math.floor(numRows / 2);
         const halfNumCols = Math.floor(numCols / 2);
 

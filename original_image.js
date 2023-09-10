@@ -185,7 +185,7 @@ function image_FFT(){
     worker.onmessage = function(event) {
         result=event.data;
         const end = performance.now();
-        document.getElementById("fft").innerHTML=math.round(end-start,5);
+        document.getElementById("fft").innerHTML=Math.round(end-start,5);
         ctx_helper.clearRect(0, 0, image.width, image.height);
         if(mode=="greyscale_mode"){
             for(let i=0;i<image.height;i++){
@@ -234,7 +234,7 @@ function reduce_FFT(){
     var c_helper=document.getElementById("helperCanvas");
     var ctx_helper=c_helper.getContext("2d");
     var slider = document.getElementById("myRange");
-    var slider_value=math.abs(slider.value-100);
+    var slider_value=Math.abs(slider.value-100);
     var reductiony=(image.width*(slider_value/100))/2;
     var reductionx=(image.height*(slider_value/100))/2;
     ctx_helper.clearRect(0, 0, image.width, image.height);
@@ -344,7 +344,7 @@ function invert_FFT(){
     worker1.onmessage = function(event) {
         resultRe=event.data;
         const end=performance.now();
-        document.getElementById("ifft").innerHTML=math.round(end-start,5);
+        document.getElementById("ifft").innerHTML=Math.round(end-start,5);
         ctx_helper.clearRect(0, 0, image.width, image.height);
         if(mode=="greyscale_mode"){
             for(let i=0;i<image.width;i++){
