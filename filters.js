@@ -36,7 +36,7 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
                 ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -90,7 +90,7 @@ function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
                 }
                 
                 ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -130,7 +130,7 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
                     result.fftResultArrayBlue[i][j][1]=0;
                 }                          
                 ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -168,7 +168,7 @@ function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony
                 } 
                                          
                 ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -228,7 +228,7 @@ function low_pass_circle(result,width,height,ctx_helper,reduction,mode){
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
                 ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;   
@@ -298,7 +298,7 @@ function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode)
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
                 ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -361,7 +361,7 @@ function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
                 }
      
                 ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -431,7 +431,7 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
                 ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -518,7 +518,7 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
                     result.fftResultArrayBlue[i][j][1]=result.fftResultArrayBlue[i][j][1]*4;
                 }
                 ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -568,7 +568,7 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
                 result.fftResultArrayBlue[i][j][1] *= filterValue;
 
                 ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
     
@@ -616,39 +616,45 @@ function gaussHighPass(result,ctx_helper,slider_value,mode){
         const middleCol = Math.floor(cols / 2);
         var sigma=100-slider_value;
 
-        const filteredResult=[];
+        const filteredResultRed=[];
+        const filteredResultGreen=[];
+        const filteredResultBlue=[];
     
         for (let i = 0; i < rows; i++) {
-            filteredResult[i]=[];
+            filteredResultRed[i]=[];
+            filteredResultGreen[i]=[];
+            filteredResultBlue[i]=[];
             for (let j = 0; j < cols; j++) {
                 const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
-                filteredResult[i][j]=[
-                result.fftResultArrayRed[i][j][0] *= filterValue,
-                result.fftResultArrayRed[i][j][1] *= filterValue,
-                result.fftResultArrayGreen[i][j][0] *= filterValue,
-                result.fftResultArrayGreen[i][j][1] *= filterValue,
-                result.fftResultArrayBlue[i][j][0] *= filterValue,
-                result.fftResultArrayBlue[i][j][1] *= filterValue
+                filteredResultRed[i][j]=[
+                    result.fftResultArrayRed[i][j][0] * filterValue,
+                    result.fftResultArrayRed[i][j][1] * filterValue
+                ];
+                filteredResultGreen[i][j]=[
+                    result.fftResultArrayGreen[i][j][0] * filterValue,
+                    result.fftResultArrayGreen[i][j][1] * filterValue
+                ];
+                filteredResultBlue[i][j]=[
+                    result.fftResultArrayBlue[i][j][0] * filterValue,
+                    result.fftResultArrayBlue[i][j][1] * filterValue
                 ];
             }
+        }
             for (let i = 0; i < rows; i++) {
                 for (let j = 0; j < cols; j++) {
-                    const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
-                    const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
-        
-                    result.fftResultArrayRed[i][j][0] *= filterValue;
-                    result.fftResultArrayRed[i][j][1] *= filterValue;
-                    result.fftResultArrayGreen[i][j][0] *= filterValue;
-                    result.fftResultArrayGreen[i][j][1] *= filterValue;
-                    result.fftResultArrayBlue[i][j][0] *= filterValue;
-                    result.fftResultArrayBlue[i][j][1] *= filterValue;
+                   
+                    result.fftResultArrayRed[i][j][0] -= filteredResultRed[i][j][0];
+                    result.fftResultArrayRed[i][j][1] -= filteredResultRed[i][j][1];
+                    result.fftResultArrayGreen[i][j][0] -= filteredResultGreen[i][j][0];
+                    result.fftResultArrayGreen[i][j][1] -= filteredResultGreen[i][j][1];
+                    result.fftResultArrayBlue[i][j][0] -= filteredResultBlue[i][j][0];
+                    result.fftResultArrayBlue[i][j][1] -= filteredResultBlue[i][j][1];
     
                     ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
-                    ctx_helper.fillRect(i, j, 1, 1);
+                    ctx_helper.fillRect(j, i, 1, 1);
                 }
             }
-        }
     
         return result;
     }

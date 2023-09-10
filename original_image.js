@@ -199,7 +199,7 @@ function image_FFT(){
             for(let i=0;i<image.height;i++){ 
                 for(let j=0;j<image.width;j++){
                     ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
-                    ctx_helper.fillRect(j,i, 1, 1);
+                    ctx_helper.fillRect(j, i, 1, 1);
                 }
             }
         }

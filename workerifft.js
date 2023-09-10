@@ -10,11 +10,10 @@ self.onmessage = function(event) {
   function transform2D(array) {
     
     if(mode=="greyscale_mode"){
-        /*
       var shiftedFFT;
       var flatFFTResult;
       var imagPart;
-      */
+      
       if(type=="inverted"){
         const numRows=array.length;
         const numCols=array[0].length;
@@ -45,7 +44,7 @@ self.onmessage = function(event) {
       self.postMessage(inverseFFTArray);
       }
       if(type=="standard"){
-        /*
+        
         flatFFTResult = array.flat().map(complex => complex[0]);
         imagPart=array.flat().map(complex => complex[1]);
         inverseTransform(flatFFTResult, imagPart);
@@ -58,44 +57,7 @@ self.onmessage = function(event) {
                 inverseFFTArray[i][j] = flatFFTResult[index] / totalElements;
             }
         }
-        */
-         // Step 1: Inverse Transform Columns
-        const numRows = array.length;
-        const numCols = array[0].length;
-        const inverseTransformedCols = [];
-        for (let j = 0; j < numCols; j++) {
-            const realPart = array.map((row) => row[j][0]);
-            const imagPart = array.map((row) => row[j][1]);
-            inverseTransform(realPart, imagPart); // Use your provided inverseTransform function
-            inverseTransformedCols.push([realPart, imagPart]);
-        }
-
-        // Step 2: Transpose Back (Swap Rows and Columns)
-        const transposed = [];
-        for (let i = 0; i < numRows; i++) {
-            const transposedRow = [];
-            for (let j = 0; j < numCols; j++) {
-            transposedRow.push([inverseTransformedCols[j][0][i], inverseTransformedCols[j][1][i]]);
-            }
-            transposed.push(transposedRow);
-        }
-
-        // Step 3: Inverse Transform Rows
-        const inverseTransformedRows = [];
-        for (let i = 0; i < numRows; i++) {
-            const realPart = transposed[i].map((col) => col[0]);
-            const imagPart = transposed[i].map((col) => col[1]);
-            inverseTransform(realPart, imagPart); // Use your provided inverseTransform function
-            inverseTransformedRows.push([realPart, imagPart]);
-        }
-
-        // Step 4: Transpose Back to Get the Final Result
-        const inverseFFTArray = [];
-        const totalElements = array.length * array[0].length;
-        for (let j = 0; j < numCols; j++) {
-            const transposedRow = inverseTransformedRows.map((row) => [row[0][j]/totalElements, row[1][j]/totalElements]);
-            inverseFFTArray.push(transposedRow);
-        }
+        
             self.postMessage(inverseFFTArray);
         }
         }
