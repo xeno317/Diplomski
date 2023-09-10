@@ -3,7 +3,8 @@ html{
 }
 .title{
     color: #333;
-    font-weight: bold;
+    font:1vw arial !important;
+    font-weight: bold !important;
 }
 input[type='radio']{
     width: 0.75vw;
@@ -49,17 +50,17 @@ input[type='radio']{
     border-radius: 5px;
     margin-left: 0.5rem;
     border: none;
-    background-color: #333;
+    background-color: #04AA6D;
     padding: 0.6rem;
     color: whitesmoke;
     font: 0.8vw arial !important;
     transition: 0.3s;
 }
 ::file-selector-button:hover{
-    background-color:#04AA6D;
+    background-color:#026440;
 }
 .start_button{
-    background-color:  rgba(68, 68, 68, 0.979);
+    background-color:  #04AA6D;
     border-radius: 5px;
     border: none;
     padding:0.6rem;
@@ -74,10 +75,10 @@ input[type='radio']{
     transform: translateX(-50%);
 }
 .start_button:hover{
-    background-color: #04AA6D;
+    background-color: #026440;
 }
 .reduction_button{
-    background-color:  rgba(68, 68, 68, 0.979);
+    background-color:  #04AA6D;
     border-radius: 5px;
     border: none;
     padding:0.6rem;
@@ -87,10 +88,10 @@ input[type='radio']{
     font: 0.8vw arial !important;
 }
 .reduction_button:hover{
-    background-color: #04AA6D;
+    background-color: #026440;
 }
 .invert_button{
-    background-color:  rgba(68, 68, 68, 0.979);
+    background-color:  #04AA6D;
     border-radius: 5px;
     border: none;
     padding:0.6rem;
@@ -101,7 +102,7 @@ input[type='radio']{
     font: 0.8vw arial !important;
 }
 .invert_button:hover{
-    background-color: #04AA6D;
+    background-color: #026440;
 }
 #helperCanvas{
     position: absolute;
@@ -129,6 +130,7 @@ input[type='radio']{
     width: 6.7vw;
     height: 1vh;
 }
+
 .results{
     display: grid;
     background-color: #333;
@@ -211,10 +213,12 @@ input[type='radio']{
 .results_type{
     padding-top: 15px;
     display: flex;
+    accent-color: #04AA6D;
 }
 .filter_shape{
     padding-top: 15px;
     display: flex;
+    accent-color: #04AA6D;
 }
 .reduction_shape_label{
     padding-right: 5px;
@@ -240,6 +244,7 @@ input[type='radio']{
     color: whitesmoke;
     width: 69%;
     margin-left: 3rem;
+    accent-color: #04AA6D;
 }
 .title{
     margin-left: 0.5rem;
