@@ -10,7 +10,7 @@
       <title>FFT Demo</title>
    </head>
    <body>
-      <label class="title">Korištenje brzih Fourierovih transformacija za obradu slike - Sandro Mikulan - FOI Varaždin</label>
+      <label class="title">Korištenje brzih Fourierovih transformacija za obradu slike - Sandro Mikulan - FOI Varaždin - 2023</label>
       <div class="image_containers">
          <div class="box">
             <div class="content">
@@ -42,11 +42,11 @@
             <div class="radioContainer">
                <div>
                   <input type="radio" id="greyscale_mode" name="mode" onclick="setMode(id)" value="greyscale" checked>
-                  <label for="greyscale_mode">Crno-bijele slike</label>
+                  <label for="greyscale_mode">Crno-bijelo</label>
                </div>
                <div>
                   <input type="radio" id="color_mode" name="mode" onclick="setMode(id)" value="color">
-                  <label for="color_mode">Slike u boji</label>
+                  <label for="color_mode">Boje</label>
                </div>
             </div>
             <div>
@@ -69,11 +69,11 @@
                   </div>
                   <div>
                      <input type="radio" id="standard" name="type" value="standard" onclick="setType(id)">
-                     <label for="standard">Kutovi</label>
+                     <label for="standard">Gornji kut</label>
                   </div>
                </div>
             </div>
-            <button class="start_button" onclick="image_FFT()">1. Start</button>
+            <button class="start_button" id="start_button" onclick="image_FFT()">1. Start</button>
          </div>
          <div class="options" id="options2">
           <label>Filtar opcije</label>
@@ -86,7 +86,7 @@
                   </div>
                   <div>
                      <input type="radio" id="rect" name="shape" value="rectangle" onclick="setShape(id)">
-                     <label for="rect">Kvadrat</label>
+                     <label for="rect">Pravokutnik</label>
                   </div>
                </div>
             </div>

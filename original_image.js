@@ -37,6 +37,7 @@ var image;
 var data=[];
 var result1;
 var resultRe;
+var modeNow;
 
 function handleFileSelect(evt) {
     result1=null;
@@ -62,6 +63,7 @@ function handleFileSelect(evt) {
         image=new Image();
         image.onload=function(){
             if(mode=="greyscale_mode"){
+                modeNow="greyscale_mode"
                 c_helper.width=image.width;
                 c_helper.height=image.height;
                 ctx_helper.drawImage(image,0,0);
@@ -98,6 +100,7 @@ function handleFileSelect(evt) {
                 ctx_helper.clearRect(0, 0, image.width, image.height);
             }
             if(mode=="color_mode"){
+                modeNow="color_mode"
                 c_helper.width=image.width;
                 c_helper.height=image.height;
                 document.getElementById("res").innerHTML=image.width+"x"+image.height;
@@ -165,6 +168,10 @@ function image_FFT(){
         alert("Početna slika nije odabrana!");
         return;
     }
+    if(mode!=modeNow){
+        alert("Ponovno odabertite sliku!");
+        return;
+    }
     if(document.getElementById("fft_image").src){
         document.getElementById("fft_image").src='';
     }
@@ -222,6 +229,10 @@ function reduce_FFT(){
     }
     if(atrFFT===null || atrFFT===''){
         alert("FFT nije proveden!");
+        return;
+    }
+    if(mode!=modeNow){
+        alert("Ponovno odabertite sliku!");
         return;
     }
     document.getElementById("ifft").innerHTML='';
@@ -334,6 +345,10 @@ function invert_FFT(){
         alert("Filtar nije primjenjen!");
         return;
     }
+    if(mode!=modeNow){
+        alert("Ponovno odabertite sliku!");
+        return;
+    }
     const worker1 = new Worker('workerifft.js');
     c_helper=document.getElementById("helperCanvas");
     ctx_helper=c_helper.getContext("2d");
@@ -386,17 +401,19 @@ function setType(value){
     const hide1=filters.querySelector("option[value='sharpen");
     const hide2=filters.querySelector("option[value='gauss_low_pass");
     const hide3=filters.querySelector("option[value='gauss_high_pass");
+    type=value;
     if(value=="standard"){ 
         hide1.style.display="none";
         hide2.style.display="none";
         hide3.style.display="none";
+        image_FFT();
     }
     if(value=="inverted"){
         hide1.style.display="block";
         hide2.style.display="block";
         hide3.style.display="block";
+        image_FFT();
     }
-    type=value;
 }
 function setShape(value){
     shape=value
