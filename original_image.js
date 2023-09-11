@@ -40,6 +40,10 @@ var resultRe;
 var modeNow;
 
 function handleFileSelect(evt) {
+    if(evt.target.files.length==0){
+        alert("Ponovno odaberite sliku!");
+        return;
+    }
     result1=null;
     resultRe=null;
     data=[];

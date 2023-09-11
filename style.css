@@ -56,9 +56,11 @@ input[type='radio']{
     color: whitesmoke;
     font: 0.8vw arial !important;
     transition: 0.3s;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 }
 ::file-selector-button:hover{
     background-color:#026440;
+    transform: translateY(-2px);
 }
 .start_button{
     background-color:  #04AA6D;
@@ -89,9 +91,11 @@ input[type='radio']{
     transition: 0.3s;
     margin-top: 15px;
     font: 0.8vw arial !important;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 }
 .reduction_button:hover{
     background-color: #026440;
+    transform: translateY(-2px);
 }
 .invert_button{
     background-color:  #04AA6D;
@@ -103,9 +107,11 @@ input[type='radio']{
     display: flex;
     margin-top: 15px;
     font: 0.8vw arial !important;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 }
 .invert_button:hover{
     background-color: #026440;
+    transform: translateY(-2px);
 }
 #helperCanvas{
     position: absolute;
