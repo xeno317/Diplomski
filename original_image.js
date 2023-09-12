@@ -166,10 +166,15 @@ function handleFileSelect(evt) {
 var result;
 var typeNow=type;
 function image_FFT(){
+    var fileInput = document.querySelector('.input-file');
     let get=document.getElementById("starting_image");
     let atr=get.getAttribute('src');
     if(atr===null || atr===''){
-        alert("Početna slika nije odabrana!");
+        fileInput.style.backgroundColor="rgb(255,155,155)";
+        fileInput.style.transition="0.2s"
+        setTimeout(function() {
+            fileInput.style.backgroundColor = "rgba(0, 0, 0, 0.1)"; // Original color
+        }, 100);
         return;
     }
     if(mode!=modeNow){

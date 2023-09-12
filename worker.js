@@ -42,7 +42,6 @@ self.onmessage = function(event) {
         if(type=="standard"){
           self.postMessage(fftResultArray);
         }
-        
       }
       if(mode=="color_mode"){
         const redChannel = array.map(row =>
