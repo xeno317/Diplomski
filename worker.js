@@ -7,19 +7,41 @@ self.onmessage = function(event) {
     
     function transform2D(array) {
       if(mode=="greyscale_mode"){
-        
-        const flatInput=array.flat();
-        const realPart=flatInput.slice();
-        const imagPart=newArrayOfZeros(flatInput.length);
 
-        transform(realPart,imagPart);
-        const fftResultArray = new Array(array.length).fill(0).map(() => new Array(array[0].length).fill(0));
-        
-        for (let i = 0; i < array.length; i++) {
-            for (let j = 0; j < array[0].length; j++) {
-                const index = i * array[0].length + j;
-                fftResultArray[i][j] = [realPart[index], imagPart[index]];
-            }
+        const numRows = array.length;
+        const numCols = array[0].length;
+
+        const fftResultArray = new Array(numRows);
+        for (let i = 0; i < numRows; i++) {
+          fftResultArray[i] = new Array(numCols);
+        }
+
+        for (let i = 0; i < numRows; i++) {
+          const row = array[i];
+          const realPart = row;
+          const imagPart = newArrayOfZeros(numCols);
+          transform(realPart, imagPart);
+          fftResultArray[i] = row.map((_, j) => [realPart[j], imagPart[j]]);
+        }
+        const transposedResult = new Array(numCols);
+        for (let i = 0; i < numCols; i++) {
+          transposedResult[i] = new Array(numRows);
+        }
+
+        for (let i = 0; i < numRows; i++) {
+          for (let j = 0; j < numCols; j++) {
+            transposedResult[j][i] = fftResultArray[i][j];
+          }
+        }
+
+        for (let i = 0; i < numCols; i++) {
+          const col = transposedResult[i];
+          const realPart = col.map((row) => row[0]);
+          const imagPart = col.map((row) => row[1]);
+          transform(realPart, imagPart);
+          for (let j = 0; j < numRows; j++) {
+            fftResultArray[j][i] = [realPart[j], imagPart[j]];
+          }
         }
         var shiftedFFT;
         if(type=="inverted"){
@@ -47,7 +69,7 @@ self.onmessage = function(event) {
         const redChannel = array.map(row =>
           row.filter((_, index) => index % 4 === 0)
         );
-        
+
         const greenChannel = array.map(row =>
           row.filter((_, index) => index % 4 === 1)
         );
@@ -55,43 +77,78 @@ self.onmessage = function(event) {
         const blueChannel = array.map(row =>
           row.filter((_, index) => index % 4 === 2)
         );
-        const flatInputRed=redChannel.flat();
-        const flatInputGreen=greenChannel.flat();
-        const flatInputBlue=blueChannel.flat();
+        const numRows = redChannel.length;
+        const numCols = redChannel[0].length;
 
-        const realPartRed=flatInputRed.slice();
-        const realPartGreen=flatInputGreen.slice();
-        const realPartBlue=flatInputBlue.slice();
-        const imagPartRed=newArrayOfZeros(flatInputRed.length);
-        const imagPartGreen=newArrayOfZeros(flatInputGreen.length);
-        const imagPartBlue=newArrayOfZeros(flatInputBlue.length);
-  
-        transform(realPartRed,imagPartRed);
-        transform(realPartGreen,imagPartGreen);
-        transform(realPartBlue,imagPartBlue);
-  
-        var fftResultArrayRed = new Array(redChannel.length).fill(0).map(() => new Array(redChannel[0].length).fill(0));
-        var fftResultArrayGreen = new Array(greenChannel.length).fill(0).map(() => new Array(greenChannel[0].length).fill(0));
-        var fftResultArrayBlue = new Array(blueChannel.length).fill(0).map(() => new Array(blueChannel[0].length).fill(0));
-  
-        for (let i = 0; i < redChannel.length; i++) {
-            for (let j = 0; j < redChannel[0].length; j++) {
-                const index = i * redChannel[0].length + j;
-                fftResultArrayRed[i][j] = [realPartRed[index], imagPartRed[index]];
-            }
+        var fftResultArrayRed = new Array(numRows);
+        var fftResultArrayGreen = new Array(numRows);
+        var fftResultArrayBlue = new Array(numRows);
+
+        for (let i = 0; i < numRows; i++) {
+          fftResultArrayRed[i] = new Array(numCols);
+          fftResultArrayGreen[i] = new Array(numCols);
+          fftResultArrayBlue[i] = new Array(numCols);
         }
-        for (let i = 0; i < greenChannel.length; i++) {
-          for (let j = 0; j < greenChannel[0].length; j++) {
-              const index = i * greenChannel[0].length + j;
-              fftResultArrayGreen[i][j] = [realPartGreen[index], imagPartGreen[index]];
+       
+        for (let i = 0; i < numRows; i++) {
+          const rowRed = redChannel[i];
+          const realPartRed = rowRed;
+          const imagPartRed = newArrayOfZeros(numCols);
+          const rowGreen = greenChannel[i];
+          const realPartGreen = rowGreen;
+          const imagPartGreen = newArrayOfZeros(numCols);
+          const rowBlue = blueChannel[i];
+          const realPartBlue = rowBlue;
+          const imagPartBlue = newArrayOfZeros(numCols);
+
+          transform(realPartRed, imagPartRed);
+          transform(realPartGreen, imagPartGreen);
+          transform(realPartBlue, imagPartBlue);
+
+          fftResultArrayRed[i] = rowRed.map((_, j) => [realPartRed[j], imagPartRed[j]]);
+          fftResultArrayGreen[i] = rowGreen.map((_, j) => [realPartGreen[j], imagPartGreen[j]]);
+          fftResultArrayBlue[i] = rowBlue.map((_, j) => [realPartBlue[j], imagPartBlue[j]]);
+        }
+
+        const transposedResultRed = new Array(numCols);
+        const transposedResultGreen = new Array(numCols);
+        const transposedResultBlue = new Array(numCols);
+        for (let i = 0; i < numCols; i++) {
+          transposedResultRed[i] = new Array(numRows);
+          transposedResultGreen[i] = new Array(numRows);
+          transposedResultBlue[i] = new Array(numRows);
+        }
+
+        for (let i = 0; i < numRows; i++) {
+          for (let j = 0; j < numCols; j++) {
+            transposedResultRed[j][i] = fftResultArrayRed[i][j];
+            transposedResultGreen[j][i] = fftResultArrayGreen[i][j];
+            transposedResultBlue[j][i] = fftResultArrayBlue[i][j];
           }
         }
-        for (let i = 0; i < blueChannel.length; i++) {
-          for (let j = 0; j < blueChannel[0].length; j++) {
-              const index = i * blueChannel[0].length + j;
-              fftResultArrayBlue[i][j] = [realPartBlue[index], imagPartBlue[index]];
+
+        for (let i = 0; i < numCols; i++) {
+          const colRed = transposedResultRed[i];
+          const colGreen = transposedResultGreen[i];
+          const colBlue = transposedResultBlue[i];
+
+          const realPartRed = colRed.map((row) => row[0]);
+          const imagPartRed = colRed.map((row) => row[1]);
+          const realPartGreen = colGreen.map((row) => row[0]);
+          const imagPartGreen = colGreen.map((row) => row[1]);
+          const realPartBlue = colBlue.map((row) => row[0]);
+          const imagPartBlue = colBlue.map((row) => row[1]);
+
+          transform(realPartRed, imagPartRed);
+          transform(realPartGreen, imagPartGreen);
+          transform(realPartBlue, imagPartBlue);
+          for (let j = 0; j < numRows; j++) {
+            fftResultArrayRed[j][i] = [realPartRed[j], imagPartRed[j]];
+            fftResultArrayGreen[j][i] = [realPartGreen[j], imagPartGreen[j]];
+            fftResultArrayBlue[j][i] = [realPartBlue[j], imagPartBlue[j]];
           }
         }
+
         var shiftedFFTRed;
         var shiftedFFTGreen;
         var shiftedFFTBlue;
@@ -113,6 +170,7 @@ self.onmessage = function(event) {
               }
             }
         }
+        
         if(type=="inverted"){
           fftResultArrayRed=shiftedFFTRed;
           fftResultArrayGreen=shiftedFFTGreen;

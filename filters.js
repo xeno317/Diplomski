@@ -1,25 +1,25 @@
 function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
     if(mode=="greyscale_mode"){
-        for(let i=0;i<width;i++){
-            for(let j=0;j<height;j++){
-                if(i>reductiony && i<width-reductiony){
+        for(let i=0;i<height;i++){
+            for(let j=0;j<width;j++){
+                if(i>reductiony && i<height-reductiony){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
-                if(j>reductionx && j<height-reductionx){
+                if(j>reductionx && j<width-reductionx){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
     }
     if(mode=="color_mode"){
-        for(let i=0;i<width;i++){
-            for(let j=0;j<height;j++){
-                if(i>reductiony && i<width-reductiony){
+        for(let i=0;i<height;i++){
+            for(let j=0;j<width;j++){
+                if(i>reductiony && i<height-reductiony){
                     result.fftResultArrayRed[i][j][0]=0;
                     result.fftResultArrayRed[i][j][1]=0;
                     result.fftResultArrayGreen[i][j][0]=0;
@@ -27,7 +27,7 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
-                if(j>reductionx && j<height-reductionx){
+                if(j>reductionx && j<width-reductionx){
                     result.fftResultArrayRed[i][j][0]=0;
                     result.fftResultArrayRed[i][j][1]=0;
                     result.fftResultArrayGreen[i][j][0]=0;
@@ -46,32 +46,32 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
 
 function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
     if(mode=="greyscale_mode"){
-        var reductiony=(width*(1-reduction/100))/2;
-        var reductionx=(height*(1-reduction/100))/2;
-        for(let i=0;i<width;i++){
-            for(let j=0;j<height;j++){
-                if(i<reductiony || i>width-reductiony){
+        var reductiony=(height*(1-reduction/100))/2;
+        var reductionx=(width*(1-reduction/100))/2;
+        for(let i=0;i<height;i++){
+            for(let j=0;j<width;j++){
+                if(i<reductiony || i>height-reductiony){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
                 
-                if(j<reductionx || j>height-reductionx){
+                if(j<reductionx || j>width-reductionx){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
                 
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
     }
     if(mode=="color_mode"){
-        var reductiony=(width*(1-reduction/100))/2;
-        var reductionx=(height*(1-reduction/100))/2;
-        for(let i=0;i<width;i++){
-            for(let j=0;j<height;j++){
-                if(i<reductiony || i>width-reductiony){
+        var reductiony=(height*(1-reduction/100))/2;
+        var reductionx=(width*(1-reduction/100))/2;
+        for(let i=0;i<height;i++){
+            for(let j=0;j<width;j++){
+                if(i<reductiony || i>height-reductiony){
                     result.fftResultArrayRed[i][j][0]=0;
                     result.fftResultArrayRed[i][j][1]=0;
                     result.fftResultArrayGreen[i][j][0]=0;
@@ -80,7 +80,7 @@ function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
                 
-                if(j<reductionx || j>height-reductionx){
+                if(j<reductionx || j>width-reductionx){
                     result.fftResultArrayRed[i][j][0]=0;
                     result.fftResultArrayRed[i][j][1]=0;
                     result.fftResultArrayGreen[i][j][0]=0;
@@ -102,15 +102,15 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
     if(mode=="greyscale_mode"){
         var reductiony=(height*(1-reduction/100))/2;
         var reductionx=(width*(1-reduction/100))/2;
-        for(let i=0;i<width;i++){
-            for(let j=0;j<height;j++){
+        for(let i=0;i<height;i++){
+            for(let j=0;j<width;j++){
                 
-                if(i<reductionx && j<reductiony || i<reductionx && j>height-reductiony || i>width-reductionx && j>height-reductiony || i>width-reductionx && j<reductiony){
+                if(j<reductionx && i<reductiony || j<reductionx && i>height-reductiony || j>width-reductionx && i>height-reductiony || j>width-reductionx && i<reductiony){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }                          
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -118,10 +118,10 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
     if(mode=="color_mode"){
         var reductiony=(height*(1-reduction/100))/2;
         var reductionx=(width*(1-reduction/100))/2;
-        for(let i=0;i<width;i++){
-            for(let j=0;j<height;j++){
+        for(let i=0;i<height;i++){
+            for(let j=0;j<width;j++){
                 
-                if(i<reductionx && j<reductiony || i<reductionx && j>height-reductiony || i>width-reductionx && j>height-reductiony || i>width-reductionx && j<reductiony){
+                if(j<reductionx && i<reductiony || j<reductionx && i>height-reductiony || j>width-reductionx && i>height-reductiony || j>width-reductionx && i<reductiony){
                     result.fftResultArrayRed[i][j][0]=0;
                     result.fftResultArrayRed[i][j][1]=0;
                     result.fftResultArrayGreen[i][j][0]=0;
@@ -140,25 +140,25 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
 
 function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony,mode){
     if(mode=="greyscale_mode"){
-        for(let i=0;i<width;i++){
-            for(let j=0;j<height;j++){
+        for(let i=0;i<height;i++){
+            for(let j=0;j<width;j++){
                 
-                if(i>reductionx && i<width-reductionx && j>reductiony && j<height-reductiony){
+                if(j>reductionx && j<width-reductionx && i>reductiony && i<height-reductiony){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 } 
                                          
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
     }
     if(mode=="color_mode"){
-        for(let i=0;i<width;i++){
-            for(let j=0;j<height;j++){
+        for(let i=0;i<height;i++){
+            for(let j=0;j<width;j++){
                 
-                if(i>reductionx && i<width-reductionx && j>reductiony && j<height-reductiony){
+                if(j>reductionx && j<width-reductionx && i>reductiony && i<height-reductiony){
                     result.fftResultArrayRed[i][j][0]=0;
                     result.fftResultArrayRed[i][j][1]=0;
                     result.fftResultArrayGreen[i][j][0]=0;
@@ -198,7 +198,7 @@ function low_pass_circle(result,width,height,ctx_helper,reduction,mode){
                     result[i][j][1]=0;
                 }
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -263,7 +263,7 @@ function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode)
                     result[i][j][1]=0;
                 }
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -329,7 +329,7 @@ function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
                 }
      
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -396,7 +396,7 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
                     result[i][j][1]=0;
                 }
                 ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -470,7 +470,7 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
                     result[i][j][1]=result[i][j][1]*4;
                 }
                 ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -541,7 +541,7 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
                 result[i][j][0] *= filterValue;
                 result[i][j][1] *= filterValue;
                 ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
                 
             }
         }
@@ -604,7 +604,7 @@ function gaussHighPass(result,ctx_helper,slider_value,mode){
                 result[i][j][1] -= filteredResult[i][j][1];
                 
                 ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0])) * 15},${Math.log(Math.abs(result[i][j][0])) * 15},${Math.log(Math.abs(result[i][j][0])) * 15})`;
-                ctx_helper.fillRect(i, j, 1, 1);
+                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;

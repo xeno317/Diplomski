@@ -76,29 +76,39 @@ function handleFileSelect(evt) {
                 document.getElementById("ifft").innerHTML='';
                 const imageData = ctx_helper.getImageData(0, 0, c_helper.width, c_helper.height);
                 const idata = imageData.data;
-                var tdata=[];
-                for(let i=0;i<image.width;i++){
-                    data[i]=[];
-                    for(let j=0;j<image.height;j++){
-                        data[i][j]=0;
-                        tdata[i*image.width+j]=0;      
-                    }
-                }
+                const tdata=new Uint8Array(c_helper.width*c_helper.height);
+
                 for(let i=0;i<idata.length/4;i++){
                     tdata[i]=idata[i*4+1];
                 }
-                for(let i=0;i<image.width;i++){
-                    for(let j=0;j<image.height;j++){
-                        data[i][j]=tdata[j*image.width+i];
+                let index=0;
+                for(let i=0;i<image.height;i++){
+                    const row=[];
+                    for(let j=0;j<image.width;j++){
+                        if(index<tdata.length){
+                            row.push(tdata[index]);
+                            index++;
+                        }
+                        else{
+                            row.push(null);                        
+                        }
                     }
+                    data.push(row);
                 }
+                let drawData=new Uint8ClampedArray(data.flat());
+                let completeDrawData=new Uint8ClampedArray(drawData.length*4);
+                let counter=0;
+                for(let i=0;i<completeDrawData.length;i+=4){
+                    completeDrawData[i]=drawData[counter];
+                    completeDrawData[i+1]=drawData[counter];
+                    completeDrawData[i+2]=drawData[counter];
+                    completeDrawData[i+3]=255;
+                    counter++;
+                }
+                let imageDataNew=ctx_helper.createImageData(c_helper.width,c_helper.height);
                 ctx_helper.clearRect(0, 0, image.width, image.height);
-                for(let i=0;i<image.width;i++){
-                    for(let j=0;j<image.height;j++){
-                        ctx_helper.fillStyle = `rgb(${data[i][j]},${data[i][j]},${data[i][j]})`;
-                        ctx_helper.fillRect(i, j, 1, 1);
-                    }
-                }
+                imageDataNew.data.set(completeDrawData);
+                ctx_helper.putImageData(imageDataNew,0,0);
                 var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
                 document.getElementById("starting_image").src=image1;
                 ctx_helper.clearRect(0, 0, image.width, image.height);
@@ -113,18 +123,20 @@ function handleFileSelect(evt) {
                 ctx_helper.drawImage(image,0,0);
                 const imageData = ctx_helper.getImageData(0, 0, c_helper.width, c_helper.height);
                 const idata = imageData.data;
+                let index=0;
                 for(let i=0;i<image.height;i++){
-                    data[i]=[];
+                    const row=[];
                     for(let j=0;j<image.width*4;j++){
-                        data[i][j]=0; 
+                        if(index<idata.length){
+                            row.push(idata[index]);
+                            index++;
+                        }
+                        else{
+                            row.push(null);                        
+                        }
                     }
+                    data.push(row);
                 }
-                for(let i=0;i<image.height;i++){
-                    for(let j=0;j<image.width*4;j++){
-                        data[i][j]=idata[i*image.width*4+j];
-                    }
-                }
-                
                 var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
                 document.getElementById("starting_image").src=image1;
                 ctx_helper.clearRect(0, 0, image.width, image.height);
@@ -173,7 +185,7 @@ function image_FFT(){
         fileInput.style.backgroundColor="rgb(255,155,155)";
         fileInput.style.transition="0.2s"
         setTimeout(function() {
-            fileInput.style.backgroundColor = "rgba(0, 0, 0, 0.1)"; // Original color
+            fileInput.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
         }, 100);
         return;
     }
@@ -203,21 +215,68 @@ function image_FFT(){
         const end = performance.now();
         document.getElementById("fft").innerHTML=Math.round(end-start,5);
         ctx_helper.clearRect(0, 0, image.width, image.height);
-        if(mode=="greyscale_mode"){
-            for(let i=0;i<image.height;i++){
-                for(let j=0;j<image.width;j++){
-                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
-                    ctx_helper.fillRect(i, j, 1, 1);
-                }
+        if(mode=="greyscale_mode"){            
+            let drawData = new Array(image.height).map(() => new Array(image.width));
+            for (let i = 0; i < image.height; i++) {
+                const row = result[i];
+                const realPart = row.map((value) => value[0]);
+                drawData[i] = realPart;
+              }
+            drawData=drawData.flat();
+            const logValues = drawData.map(val => Math.log(Math.abs(val)) * 15);
+            let completeDrawData=new Uint8ClampedArray(drawData.length*4);
+            let counter=0;
+            for(let i=0;i<completeDrawData.length;i+=4){
+                let value=logValues[counter];
+                completeDrawData[i]=value;
+                completeDrawData[i+1]=value;
+                completeDrawData[i+2]=value;
+                completeDrawData[i+3]=255;
+                counter++;
             }
+            let imageDataNew=ctx_helper.createImageData(c_helper.width,c_helper.height);
+            ctx_helper.clearRect(0, 0, image.width, image.height);
+            imageDataNew.data.set(completeDrawData);
+            ctx_helper.putImageData(imageDataNew,0,0);   
         }
         if(mode=="color_mode"){
-            for(let i=0;i<image.height;i++){ 
-                for(let j=0;j<image.width;j++){
-                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
-                    ctx_helper.fillRect(j, i, 1, 1);
-                }
+            let drawDataRed = new Array(image.height).map(() => new Array(image.width));
+            let drawDataGreen = new Array(image.height).map(() => new Array(image.width));
+            let drawDataBlue = new Array(image.height).map(() => new Array(image.width));
+            for (let i = 0; i < image.height; i++) {
+                const rowRed = result.fftResultArrayRed[i];
+                const realPartRed = rowRed.map((value) => value[0]);
+                const rowGreen = result.fftResultArrayGreen[i];
+                const realPartGreen = rowGreen.map((value) => value[0]);
+                const rowBlue = result.fftResultArrayBlue[i];
+                const realPartBlue = rowBlue.map((value) => value[0]);
+                drawDataRed[i] = realPartRed;
+                drawDataGreen[i] = realPartGreen;
+                drawDataBlue[i] = realPartBlue;
+              }
+            drawDataRed=drawDataRed.flat();
+            drawDataGreen=drawDataGreen.flat();
+            drawDataBlue=drawDataBlue.flat();
+            const logValuesRed = drawDataRed.map(val => Math.log(Math.abs(val)) * 15);
+            const logValuesGreen = drawDataGreen.map(val => Math.log(Math.abs(val)) * 15);
+            const logValuesBlue = drawDataBlue.map(val => Math.log(Math.abs(val)) * 15);
+            let completeDrawData=new Uint8ClampedArray(drawDataRed.length*4);
+            let counter=0;
+            for(let i=0;i<completeDrawData.length;i+=4){
+                let valueRed=logValuesRed[counter];
+                let valueGreen=logValuesGreen[counter];
+                let valueBlue=logValuesBlue[counter];
+                completeDrawData[i]=valueRed;
+                completeDrawData[i+1]=valueGreen;
+                completeDrawData[i+2]=valueBlue;
+                completeDrawData[i+3]=255;
+                counter++;
             }
+            let imageDataNew=ctx_helper.createImageData(c_helper.width,c_helper.height);
+            ctx_helper.clearRect(0, 0, image.width, image.height);
+            imageDataNew.data.set(completeDrawData);
+            ctx_helper.putImageData(imageDataNew,0,0);
+
         }
         var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
         document.getElementById("fft_image").src=image1;
@@ -255,8 +314,8 @@ function reduce_FFT(){
     var ctx_helper=c_helper.getContext("2d");
     var slider = document.getElementById("myRange");
     var slider_value=Math.abs(slider.value-100);
-    var reductiony=(image.width*(slider_value/100))/2;
-    var reductionx=(image.height*(slider_value/100))/2;
+    var reductiony=(image.height*(slider_value/100))/2;
+    var reductionx=(image.width*(slider_value/100))/2;
     ctx_helper.clearRect(0, 0, image.width, image.height);
     if(mode=="greyscale_mode"){
         result1=copyArray(result);
@@ -369,22 +428,60 @@ function invert_FFT(){
         resultRe=event.data;
         const end=performance.now();
         document.getElementById("ifft").innerHTML=Math.round(end-start,5);
-        ctx_helper.clearRect(0, 0, image.width, image.height);
+        ctx_helper.clearRect(0, 0, image.height, image.width);
         if(mode=="greyscale_mode"){
-            for(let i=0;i<image.width;i++){
-                for(let j=0;j<image.height;j++){
-                    ctx_helper.fillStyle = `rgb(${resultRe[i][j]},${resultRe[i][j]},${resultRe[i][j]})`;
-                    ctx_helper.fillRect(i, j, 1, 1);
-                }
+            let drawData = new Array(image.height).fill(0).map(() => new Array(image.width).fill(0));
+            for (let i = 0; i < image.height; i++) {
+                const row = resultRe[i];
+                const realPart = row.map((value) => value[0]);
+                drawData[i] = realPart;
+              }
+            drawData=drawData.flat();
+            let completeDrawData=new Uint8ClampedArray(drawData.length*4);
+            let counter=0;
+            for(let i=0;i<completeDrawData.length;i+=4){
+                completeDrawData[i]=drawData[counter];
+                completeDrawData[i+1]=drawData[counter];
+                completeDrawData[i+2]=drawData[counter];
+                completeDrawData[i+3]=255;
+                counter++;
             }
+            let imageDataNew=ctx_helper.createImageData(c_helper.width,c_helper.height);
+            ctx_helper.clearRect(0, 0, image.width, image.height);
+            imageDataNew.data.set(completeDrawData);
+            ctx_helper.putImageData(imageDataNew,0,0);
         }
         if(mode=="color_mode"){
-            for(let i=0;i<image.height;i++){
-                for(let j=0;j<image.width;j++){
-                    ctx_helper.fillStyle = `rgb(${Math.abs(resultRe.inverseFFTArrayRed[i][j])},${Math.abs(resultRe.inverseFFTArrayGreen[i][j])},${Math.abs(resultRe.inverseFFTArrayBlue[i][j])})`;
-                    ctx_helper.fillRect(j, i, 1, 1);
-                }
+            let drawDataRed = new Array(image.height).map(() => new Array(image.width));
+            let drawDataGreen = new Array(image.height).map(() => new Array(image.width));
+            let drawDataBlue = new Array(image.height).map(() => new Array(image.width));
+            for (let i = 0; i < image.height; i++) {
+                const rowRed = resultRe.inverseFFTArrayRed[i];
+                const realPartRed = rowRed.map((value) => value[0]);
+                const rowGreen = resultRe.inverseFFTArrayGreen[i];
+                const realPartGreen = rowGreen.map((value) => value[0]);
+                const rowBlue = resultRe.inverseFFTArrayBlue[i];
+                const realPartBlue = rowBlue.map((value) => value[0]);
+                drawDataRed[i] = realPartRed;
+                drawDataGreen[i] = realPartGreen;
+                drawDataBlue[i] = realPartBlue;
+              }
+            drawDataRed=drawDataRed.flat();
+            drawDataGreen=drawDataGreen.flat();
+            drawDataBlue=drawDataBlue.flat();
+            let completeDrawData=new Uint8ClampedArray(drawDataRed.length*4);
+            let counter=0;
+            for(let i=0;i<completeDrawData.length;i+=4){
+                completeDrawData[i]=drawDataRed[counter];
+                completeDrawData[i+1]=drawDataGreen[counter];
+                completeDrawData[i+2]=drawDataBlue[counter];
+                completeDrawData[i+3]=255;
+                counter++;
             }
+            let imageDataNew=ctx_helper.createImageData(c_helper.width,c_helper.height);
+            ctx_helper.clearRect(0, 0, image.width, image.height);
+            imageDataNew.data.set(completeDrawData);
+            ctx_helper.putImageData(imageDataNew,0,0);
         }
         var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
         document.getElementById("inverse_fft_image").src=image1;
