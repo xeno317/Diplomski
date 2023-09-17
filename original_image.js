@@ -81,7 +81,7 @@ function handleFileSelect(evt) {
                 document.getElementById("ifft").innerHTML='';
                 const imageData = ctx_helper.getImageData(0, 0, c_helper.width, c_helper.height);
                 const idata = imageData.data;
-                const tdata=new Uint32Array(c_helper.width*c_helper.height);
+                const tdata=new Uint8ClampedArray(c_helper.width*c_helper.height);
 
                 for(let i=0;i<idata.length/4;i++){
                     tdata[i]=idata[i*4+1];
@@ -100,8 +100,8 @@ function handleFileSelect(evt) {
                     }
                     data.push(row);
                 }
-                let drawData=new Uint32Array(data.flat());
-                let completeDrawData=new Uint32Array(drawData.length*4);
+                let drawData=new Uint8ClampedArray(data.flat());
+                let completeDrawData=new Uint8ClampedArray(drawData.length*4);
                 let counter=0;
                 for(let i=0;i<completeDrawData.length;i+=4){
                     completeDrawData[i]=drawData[counter];
@@ -165,7 +165,7 @@ function handleFileSelect(evt) {
         data.push(result[i+3]);
         data.push(255);
     }
-    var data1=new Uint32Array(data);
+    var data1=new Uint8ClampedArray(data);
     var dimensions=result[2].split(" ");
     ctx.canvas.width=dimensions[0];
     ctx.canvas.height=dimensions[1];
@@ -236,7 +236,7 @@ function image_FFT(){
               }
             drawData=drawData.flat();
             const logValues = drawData.map(val => Math.log(Math.abs(val)) * 15);
-            let completeDrawData=new Uint32Array(drawData.length*4);
+            let completeDrawData=new Uint8ClampedArray(drawData.length*4);
             let counter=0;
             for(let i=0;i<completeDrawData.length;i+=4){
                 let value=logValues[counter];
@@ -277,7 +277,7 @@ function image_FFT(){
             const logValuesRed = drawDataRed.map(val => Math.log(Math.abs(val)) * 15);
             const logValuesGreen = drawDataGreen.map(val => Math.log(Math.abs(val)) * 15);
             const logValuesBlue = drawDataBlue.map(val => Math.log(Math.abs(val)) * 15);
-            let completeDrawData=new Uint32Array(drawDataRed.length*4);
+            let completeDrawData=new Uint8ClampedArray(drawDataRed.length*4);
             let counter=0;
             for(let i=0;i<completeDrawData.length;i+=4){
                 let valueRed=logValuesRed[counter];
@@ -453,7 +453,7 @@ function invert_FFT(){
                 drawData[i] = realPart;
               }
             drawData=drawData.flat();
-            let completeDrawData=new Uint32Array(drawData.length*4);
+            let completeDrawData=new Uint8ClampedArray(drawData.length*4);
             let counter=0;
             const numRows = resultRe.length;
             const numCols = resultRe[0].length;
@@ -487,7 +487,7 @@ function invert_FFT(){
             drawDataRed=drawDataRed.flat();
             drawDataGreen=drawDataGreen.flat();
             drawDataBlue=drawDataBlue.flat();
-            let completeDrawData=new Uint32Array(drawDataRed.length*4);
+            let completeDrawData=new Uint8ClampedArray(drawDataRed.length*4);
             let counter=0;
             for(let i=0;i<completeDrawData.length;i+=4){
                 completeDrawData[i]=drawDataRed[counter];
