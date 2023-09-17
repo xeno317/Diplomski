@@ -38,6 +38,8 @@ var data=[];
 var result1;
 var resultRe;
 var modeNow;
+var rowsAdded=false;
+var columnsAdded=false;
 
 function handleFileSelect(evt) {
     if(evt.target.files.length==0){
@@ -70,13 +72,16 @@ function handleFileSelect(evt) {
                 modeNow="greyscale_mode"
                 c_helper.width=image.width;
                 c_helper.height=image.height;
+                if(image.width*image.height>4000000){
+                    alert("Odabrana slika visoke rezolucije, moguće je smanjenje performansi. Preporučuje se da ukupni broj piksela ne prelazi 4 milijuna.");
+                }
                 ctx_helper.drawImage(image,0,0);
                 document.getElementById("res").innerHTML=image.width+"x"+image.height;
                 document.getElementById("fft").innerHTML='';
                 document.getElementById("ifft").innerHTML='';
                 const imageData = ctx_helper.getImageData(0, 0, c_helper.width, c_helper.height);
                 const idata = imageData.data;
-                const tdata=new Uint8Array(c_helper.width*c_helper.height);
+                const tdata=new Uint32Array(c_helper.width*c_helper.height);
 
                 for(let i=0;i<idata.length/4;i++){
                     tdata[i]=idata[i*4+1];
@@ -95,8 +100,8 @@ function handleFileSelect(evt) {
                     }
                     data.push(row);
                 }
-                let drawData=new Uint8ClampedArray(data.flat());
-                let completeDrawData=new Uint8ClampedArray(drawData.length*4);
+                let drawData=new Uint32Array(data.flat());
+                let completeDrawData=new Uint32Array(drawData.length*4);
                 let counter=0;
                 for(let i=0;i<completeDrawData.length;i+=4){
                     completeDrawData[i]=drawData[counter];
@@ -117,6 +122,9 @@ function handleFileSelect(evt) {
                 modeNow="color_mode"
                 c_helper.width=image.width;
                 c_helper.height=image.height;
+                if(image.width*image.height>2000000){
+                    alert("Odabrana slika visoke rezolucije, moguće je smanjenje performansi. Preporučuje se rad u crno-bijelom načinu.");
+                }
                 document.getElementById("res").innerHTML=image.width+"x"+image.height;
                 document.getElementById("fft").innerHTML='';
                 document.getElementById("ifft").innerHTML='';
@@ -157,7 +165,7 @@ function handleFileSelect(evt) {
         data.push(result[i+3]);
         data.push(255);
     }
-    var data1=new Uint8ClampedArray(data);
+    var data1=new Uint32Array(data);
     var dimensions=result[2].split(" ");
     ctx.canvas.width=dimensions[0];
     ctx.canvas.height=dimensions[1];
@@ -214,8 +222,12 @@ function image_FFT(){
         result=event.data;
         const end = performance.now();
         document.getElementById("fft").innerHTML=Math.round(end-start,5);
-        ctx_helper.clearRect(0, 0, image.width, image.height);
-        if(mode=="greyscale_mode"){            
+        if(mode=="greyscale_mode"){       
+            image.width=result[0].length;
+            image.height=result.length;
+            c_helper.width=image.width;
+            c_helper.height=image.height;
+            ctx_helper.clearRect(0, 0, image.width, image.height);     
             let drawData = new Array(image.height).map(() => new Array(image.width));
             for (let i = 0; i < image.height; i++) {
                 const row = result[i];
@@ -224,7 +236,7 @@ function image_FFT(){
               }
             drawData=drawData.flat();
             const logValues = drawData.map(val => Math.log(Math.abs(val)) * 15);
-            let completeDrawData=new Uint8ClampedArray(drawData.length*4);
+            let completeDrawData=new Uint32Array(drawData.length*4);
             let counter=0;
             for(let i=0;i<completeDrawData.length;i+=4){
                 let value=logValues[counter];
@@ -234,12 +246,17 @@ function image_FFT(){
                 completeDrawData[i+3]=255;
                 counter++;
             }
-            let imageDataNew=ctx_helper.createImageData(c_helper.width,c_helper.height);
+            let imageDataNew=ctx_helper.createImageData(image.width,image.height);
             ctx_helper.clearRect(0, 0, image.width, image.height);
             imageDataNew.data.set(completeDrawData);
             ctx_helper.putImageData(imageDataNew,0,0);   
         }
         if(mode=="color_mode"){
+            image.width=result.fftResultArrayRed[0].length;
+            image.height=result.fftResultArrayRed.length;
+            c_helper.width=image.width;
+            c_helper.height=image.height;
+            ctx_helper.clearRect(0, 0, image.width, image.height);     
             let drawDataRed = new Array(image.height).map(() => new Array(image.width));
             let drawDataGreen = new Array(image.height).map(() => new Array(image.width));
             let drawDataBlue = new Array(image.height).map(() => new Array(image.width));
@@ -260,7 +277,7 @@ function image_FFT(){
             const logValuesRed = drawDataRed.map(val => Math.log(Math.abs(val)) * 15);
             const logValuesGreen = drawDataGreen.map(val => Math.log(Math.abs(val)) * 15);
             const logValuesBlue = drawDataBlue.map(val => Math.log(Math.abs(val)) * 15);
-            let completeDrawData=new Uint8ClampedArray(drawDataRed.length*4);
+            let completeDrawData=new Uint32Array(drawDataRed.length*4);
             let counter=0;
             for(let i=0;i<completeDrawData.length;i+=4){
                 let valueRed=logValuesRed[counter];
@@ -272,7 +289,7 @@ function image_FFT(){
                 completeDrawData[i+3]=255;
                 counter++;
             }
-            let imageDataNew=ctx_helper.createImageData(c_helper.width,c_helper.height);
+            let imageDataNew=ctx_helper.createImageData(image.width,image.height);
             ctx_helper.clearRect(0, 0, image.width, image.height);
             imageDataNew.data.set(completeDrawData);
             ctx_helper.putImageData(imageDataNew,0,0);
@@ -286,6 +303,7 @@ function image_FFT(){
     
 }
 function reduce_FFT(){
+    document.getElementById("reduction_result_image").src="loading.svg";
     result1=null;
     let get=document.getElementById("starting_image");
     let atr=get.getAttribute('src');
@@ -329,20 +347,20 @@ function reduce_FFT(){
         if(shape=="circle"){
             switch(text){
                 case 'low_pass':
-                    result1=low_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    result1=  low_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'high_pass':
-                    result1=high_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    result1= high_pass_circle_standard(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
             }
         }
         if(shape=="rect"){
             switch(text){
                 case 'low_pass':
-                    result1=low_pass(result1,image.width,image.height,ctx_helper,reductionx,reductiony,mode);
+                    result1= low_pass(result1,image.width,image.height,ctx_helper,reductionx,reductiony,mode);
                     break;
                 case 'high_pass':
-                    result1=high_pass(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    result1= high_pass(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
             }
         }
@@ -351,35 +369,35 @@ function reduce_FFT(){
         if(shape=="circle"){
             switch(text){
                 case 'low_pass':
-                    result1=low_pass_circle(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    result1= low_pass_circle(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'high_pass':
-                    result1=high_pass_circle(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    result1= high_pass_circle(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'sharpen':
-                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    result1= sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'gauss_low_pass':
-                    result1=gaussLowPass(result1,ctx_helper,slider_value,mode);
+                    result1= gaussLowPass(result1,ctx_helper,slider_value,mode);
                     break;
                 case 'gauss_high_pass':
-                    result1=gaussHighPass(result1,ctx_helper,slider_value,mode);
+                    result1= gaussHighPass(result1,ctx_helper,slider_value,mode);
                     break;
             }
         }
         if(shape=="rect"){
             switch(text){
                 case 'low_pass':
-                    result1=low_pass_inverted(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    result1= low_pass_inverted(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'high_pass':
-                    result1=high_pass_inverted(result1,image.width,image.height,ctx_helper,reductionx,reductiony,mode);
+                    result1= high_pass_inverted(result1,image.width,image.height,ctx_helper,reductionx,reductiony,mode);
                     break;
                 case 'sharpen':
-                    result1=sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
+                    result1= sharpen(result1,image.width,image.height,ctx_helper,slider_value,mode);
                     break;
                 case 'gauss_low_pass':
-                    result1=gaussLowPass(result1,ctx_helper,slider_value,mode);
+                    result1= gaussLowPass(result1,ctx_helper,slider_value,mode);
                     break;
                 case 'gauss_high_pass':
                     result1=gaussHighPass(result1,ctx_helper,slider_value,mode);
@@ -387,8 +405,6 @@ function reduce_FFT(){
             }
         }
     }  
-    
-
     var image1=ctx_helper.canvas.toDataURL('image/png').replace("image/png", "image/octet-stream");
     document.getElementById("reduction_result_image").src=image1;
 
@@ -437,13 +453,15 @@ function invert_FFT(){
                 drawData[i] = realPart;
               }
             drawData=drawData.flat();
-            let completeDrawData=new Uint8ClampedArray(drawData.length*4);
+            let completeDrawData=new Uint32Array(drawData.length*4);
             let counter=0;
+            const numRows = resultRe.length;
+            const numCols = resultRe[0].length;
             for(let i=0;i<completeDrawData.length;i+=4){
-                completeDrawData[i]=drawData[counter];
-                completeDrawData[i+1]=drawData[counter];
-                completeDrawData[i+2]=drawData[counter];
-                completeDrawData[i+3]=255;
+                completeDrawData[i] = drawData[counter];
+                completeDrawData[i+1] = drawData[counter];
+                completeDrawData[i+2] = drawData[counter];
+                completeDrawData[i+3] = 255;
                 counter++;
             }
             let imageDataNew=ctx_helper.createImageData(c_helper.width,c_helper.height);
@@ -469,7 +487,7 @@ function invert_FFT(){
             drawDataRed=drawDataRed.flat();
             drawDataGreen=drawDataGreen.flat();
             drawDataBlue=drawDataBlue.flat();
-            let completeDrawData=new Uint8ClampedArray(drawDataRed.length*4);
+            let completeDrawData=new Uint32Array(drawDataRed.length*4);
             let counter=0;
             for(let i=0;i<completeDrawData.length;i+=4){
                 completeDrawData[i]=drawDataRed[counter];

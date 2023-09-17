@@ -7,7 +7,14 @@ self.onmessage = function(event) {
     
     function transform2D(array) {
       if(mode=="greyscale_mode"){
-
+        if(array.length%2!=0){
+          array.push(new Array(array[0].length).fill(0));
+        }
+        if(array[0].length%2!=0){
+          for(let i=0;i<array.length;i++){
+            array[i].push(0);
+          }
+        }
         const numRows = array.length;
         const numCols = array[0].length;
 
@@ -45,18 +52,18 @@ self.onmessage = function(event) {
         }
         var shiftedFFT;
         if(type=="inverted"){
-          const numRows=array.length;
-          const numCols=array[0].length;
+          const numRows=fftResultArray.length;
+          const numCols=fftResultArray[0].length;
           shiftedFFT = new Array(numRows).fill(0).map(() => new Array(numCols).fill(0));
           const halfNumRows = Math.floor(numRows / 2);
           const halfNumCols = Math.floor(numCols / 2);
-            for (let i = 0; i < numRows; i++) {
-              for (let j = 0; j < numCols; j++) {
-                const newRow = (i + halfNumRows) % numRows;
-                const newCol = (j + halfNumCols) % numCols;
-                shiftedFFT[newRow][newCol] = fftResultArray[i][j];
-              }
+          for (let i = 0; i < numRows; i++) {
+            for (let j = 0; j < numCols; j++) {
+              const newRow = (i + halfNumRows) % numRows;
+              const newCol = (j + halfNumCols) % numCols;
+              shiftedFFT[newRow][newCol] = fftResultArray[i][j];
             }
+          }
         }
         if(type=="inverted"){
           self.postMessage(shiftedFFT);
@@ -77,6 +84,18 @@ self.onmessage = function(event) {
         const blueChannel = array.map(row =>
           row.filter((_, index) => index % 4 === 2)
         );
+        if(redChannel.length%2!=0){
+          redChannel.push(new Array(redChannel[0].length).fill(255));
+          blueChannel.push(new Array(greenChannel[0].length).fill(255));
+          greenChannel.push(new Array(blueChannel[0].length).fill(255));
+        }
+        if(redChannel[0].length%2!=0){
+          for(let i=0;i<redChannel.length;i++){
+            redChannel[i].push(255);
+            greenChannel[i].push(255);
+            blueChannel[i].push(255);
+          }
+        }
         const numRows = redChannel.length;
         const numCols = redChannel[0].length;
 

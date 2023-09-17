@@ -6,9 +6,8 @@ self.onmessage = function(event) {
   transform2D(data);
   
   function transform2D(array) {
-    
+    const originalLength=array.length;
     if(mode=="greyscale_mode"){
-
       if(type=="inverted"){
         const numRows=array.length;
         const numCols=array[0].length;
