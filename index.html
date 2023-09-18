@@ -6,7 +6,6 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="style.css">
       <script src="original_image.js"></script>
-      <script src="filters.js"></script>
       <title>FFT Demo</title>
    </head>
    <body>
@@ -15,25 +14,25 @@
          <div class="box">
             <div class="content">
                <label id="box_title">Početna slika</label>
-               <img id="starting_image" loading="lazy">
+               <img id="starting_image" loading="eager">
             </div>
          </div>
          <div class="box">
             <div class="content">
                <label id="box_title">FFT rezultat</label>
-               <img id="fft_image">
+               <img id="fft_image" loading="eager">
             </div>
          </div>
          <div class="box">
             <div class="content">
                <label id="box_title">Rezultat filtriranja</label>
-               <img id="reduction_result_image">
+               <img id="reduction_result_image" loading="eager">
             </div>
          </div>
          <div class="box">
             <div class="content">
                <label id="box_title">Inverzni FFT rezultat</label>
-               <img id="inverse_fft_image">
+               <img id="inverse_fft_image" loading="eager">
             </div>
          </div>
       </div>

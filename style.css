@@ -1,5 +1,6 @@
 html{
     font: 0.8vw arial !important;
+    overflow-x: hidden;
 }
 .title{
     color: #333;
@@ -117,7 +118,7 @@ input[type='radio']{
     position: absolute;
     left: 0;
     bottom: 0;
-    visibility: hidden;
+    display: none;
 }
 .slidecontainer{
     display: flex;

@@ -1,4 +1,80 @@
-function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
+self.onmessage = function(event) {
+    var result1=event.data.result1;
+    const width=event.data.width;
+    const height=event.data.height;
+    const type=event.data.type;
+    const shape=event.data.shape;
+    const text=event.data.text;
+    const slider_value=event.data.slider_value;
+    const reductionx=event.data.reductionx;
+    const reductiony=event.data.reductiony;
+    const mode=event.data.mode;
+
+    if(type=="standard"){
+        if(shape=="circle"){
+            switch(text){
+                case 'low_pass':
+                    result1=low_pass_circle_standard(result1,width,height,slider_value,mode);
+                    break;
+                case 'high_pass':
+                    result1= high_pass_circle_standard(result1,width,height,slider_value,mode);
+                    break;
+            }
+        }
+        if(shape=="rect"){
+            switch(text){
+                case 'low_pass':
+                    result1= low_pass(result1,width,height,reductionx,reductiony,mode);
+                    break;
+                case 'high_pass':
+                    result1= high_pass(result1,width,height,slider_value,mode);
+                    break;
+            }
+        }
+    }
+    if(type=="inverted"){
+        if(shape=="circle"){
+            switch(text){
+                case 'low_pass':
+                    result1= low_pass_circle(result1,width,height,slider_value,mode);
+                    break;
+                case 'high_pass':
+                    result1= high_pass_circle(result1,width,height,slider_value,mode);
+                    break;
+                case 'sharpen':
+                    result1= sharpen(result1,width,height,slider_value,mode);
+                    break;
+                case 'gauss_low_pass':
+                    result1= gaussLowPass(result1,slider_value,mode);
+                    break;
+                case 'gauss_high_pass':
+                    result1= gaussHighPass(result1,slider_value,mode);
+                    break;
+            }
+        }
+        if(shape=="rect"){
+            switch(text){
+                case 'low_pass':
+                    result1= low_pass_inverted(result1,width,height,slider_value,mode);
+                    break;
+                case 'high_pass':
+                    result1= high_pass_inverted(result1,width,height,reductionx,reductiony,mode);
+                    break;
+                case 'sharpen':
+                    result1= sharpen(result1,width,height,slider_value,mode);
+                    break;
+                case 'gauss_low_pass':
+                    result1= gaussLowPass(result1,slider_value,mode);
+                    break;
+                case 'gauss_high_pass':
+                    result1=gaussHighPass(result1,slider_value,mode);
+                    break;
+            }
+        }
+    }
+    self.postMessage(result1);  
+}
+function low_pass(result,width,height,reductionx,reductiony,mode){
     if(mode=="greyscale_mode"){
         for(let i=0;i<height;i++){
             for(let j=0;j<width;j++){
@@ -10,10 +86,9 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
+       
         return result;
     }
     if(mode=="color_mode"){
@@ -35,8 +110,6 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -44,7 +117,7 @@ function low_pass(result,width,height,ctx_helper,reductionx,reductiony,mode){
     
 }
 
-function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
+function low_pass_inverted(result,width,height,reduction,mode){
     if(mode=="greyscale_mode"){
         var reductiony=(height*(1-reduction/100))/2;
         var reductionx=(width*(1-reduction/100))/2;
@@ -59,9 +132,6 @@ function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
-                
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -88,9 +158,6 @@ function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
-                
-                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -98,7 +165,7 @@ function low_pass_inverted(result,width,height,ctx_helper,reduction,mode){
     
 }
 
-function high_pass(result,width,height,ctx_helper,reduction,mode){
+function high_pass(result,width,height,reduction,mode){
     if(mode=="greyscale_mode"){
         var reductiony=(height*(1-reduction/100))/2;
         var reductionx=(width*(1-reduction/100))/2;
@@ -109,8 +176,6 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }                          
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -129,8 +194,6 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 }                          
-                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -138,7 +201,7 @@ function high_pass(result,width,height,ctx_helper,reduction,mode){
     
 }
 
-function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony,mode){
+function high_pass_inverted(result,width,height,reductionx,reductiony,mode){
     if(mode=="greyscale_mode"){
         for(let i=0;i<height;i++){
             for(let j=0;j<width;j++){
@@ -147,9 +210,6 @@ function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 } 
-                                         
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -166,9 +226,6 @@ function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 } 
-                                         
-                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -176,7 +233,7 @@ function high_pass_inverted(result,width,height,ctx_helper,reductionx,reductiony
     
 }
 
-function low_pass_circle(result,width,height,ctx_helper,reduction,mode){ 
+function low_pass_circle(result,width,height,reduction,mode){ 
     if(mode=="greyscale_mode"){
         const rows=result.length;
         const cols=result[0].length;
@@ -197,8 +254,6 @@ function low_pass_circle(result,width,height,ctx_helper,reduction,mode){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -227,8 +282,6 @@ function low_pass_circle(result,width,height,ctx_helper,reduction,mode){
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;   
@@ -236,7 +289,7 @@ function low_pass_circle(result,width,height,ctx_helper,reduction,mode){
    
 }
 
-function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode){
+function low_pass_circle_standard(result,width,height,reduction,mode){
     if(mode=="greyscale_mode"){
         const rows=result.length;
         const cols=result[0].length;
@@ -262,8 +315,6 @@ function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode)
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -297,15 +348,13 @@ function low_pass_circle_standard(result,width,height,ctx_helper,reduction,mode)
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
     }
 }
 
-function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
+function high_pass_circle(result,width,height,reduction, mode){
     if(mode=="greyscale_mode"){
         const rows=result.length;
         const cols=result[0].length;
@@ -327,9 +376,6 @@ function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
-     
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -359,9 +405,6 @@ function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
-     
-                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -369,7 +412,7 @@ function high_pass_circle(result,width,height,ctx_helper,reduction, mode){
    
 }
 
-function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode){
+function high_pass_circle_standard(result,width,height,reduction,mode){
     if(mode=="greyscale_mode"){
         const rows=result.length;
         const cols=result[0].length;
@@ -395,8 +438,6 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
                     result[i][j][0]=0;
                     result[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result[i][j][0]},${result[i][j][0]},${result[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -430,15 +471,13 @@ function high_pass_circle_standard(result,width,height,ctx_helper,reduction,mode
                     result.fftResultArrayBlue[i][j][0]=0;
                     result.fftResultArrayBlue[i][j][1]=0;
                 }
-                ctx_helper.fillStyle = `rgb(${result.fftResultArrayRed[i][j][0]},${result.fftResultArrayGreen[i][j][0]},${result.fftResultArrayBlue[i][j][0]})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
     }
    
 }
-function sharpen(result,width,height,ctx_helper,reduction,mode){
+function sharpen(result,width,height,reduction,mode){
     if(mode=="greyscale_mode"){
         const rows=result.length;
         const cols=result[0].length;
@@ -469,8 +508,6 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
                     result[i][j][0]=result[i][j][0]*4;
                     result[i][j][1]=result[i][j][1]*4;
                 }
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -517,8 +554,6 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
                     result.fftResultArrayBlue[i][j][0]=result.fftResultArrayBlue[i][j][0]*4;
                     result.fftResultArrayBlue[i][j][1]=result.fftResultArrayBlue[i][j][1]*4;
                 }
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -526,7 +561,7 @@ function sharpen(result,width,height,ctx_helper,reduction,mode){
    
 }
 
-function gaussLowPass(result,ctx_helper,slider_value,mode){
+function gaussLowPass(result,slider_value,mode){
     if(mode=="greyscale_mode"){
         const rows = result.length;
         const cols = result[0].length;
@@ -539,10 +574,7 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
                 const distance=Math.sqrt(Math.pow(i-middleRow,2)+Math.pow(j-middleCol,2));
                 const filterValue = Math.exp(-(distance ** 2) / (2 * sigma ** 2));
                 result[i][j][0] *= filterValue;
-                result[i][j][1] *= filterValue;
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15},${Math.log(Math.abs(result[i][j][0]))*15})`;
-                ctx_helper.fillRect(j, i, 1, 1);
-                
+                result[i][j][1] *= filterValue;                
             }
         }
     
@@ -566,9 +598,6 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
                 result.fftResultArrayGreen[i][j][1] *= filterValue;
                 result.fftResultArrayBlue[i][j][0] *= filterValue;
                 result.fftResultArrayBlue[i][j][1] *= filterValue;
-
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
     
@@ -576,7 +605,7 @@ function gaussLowPass(result,ctx_helper,slider_value,mode){
     }
     
 }
-function gaussHighPass(result,ctx_helper,slider_value,mode){
+function gaussHighPass(result,slider_value,mode){
     if(mode=="greyscale_mode"){
         const rows = result.length;
         const cols = result[0].length;
@@ -602,9 +631,6 @@ function gaussHighPass(result,ctx_helper,slider_value,mode){
             for (let j = 0; j < cols; j++) {
                 result[i][j][0] -= filteredResult[i][j][0];
                 result[i][j][1] -= filteredResult[i][j][1];
-                
-                ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result[i][j][0])) * 15},${Math.log(Math.abs(result[i][j][0])) * 15},${Math.log(Math.abs(result[i][j][0])) * 15})`;
-                ctx_helper.fillRect(j, i, 1, 1);
             }
         }
         return result;
@@ -650,9 +676,6 @@ function gaussHighPass(result,ctx_helper,slider_value,mode){
                     result.fftResultArrayGreen[i][j][1] -= filteredResultGreen[i][j][1];
                     result.fftResultArrayBlue[i][j][0] -= filteredResultBlue[i][j][0];
                     result.fftResultArrayBlue[i][j][1] -= filteredResultBlue[i][j][1];
-    
-                    ctx_helper.fillStyle = `rgb(${Math.log(Math.abs(result.fftResultArrayRed[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayGreen[i][j][0]))*15},${Math.log(Math.abs(result.fftResultArrayBlue[i][j][0]))*15})`;
-                    ctx_helper.fillRect(j, i, 1, 1);
                 }
             }
     
