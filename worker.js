@@ -17,7 +17,6 @@ self.onmessage = function(event) {
         }
         const numRows = array.length;
         const numCols = array[0].length;
-
         const fftResultArray = new Array(numRows);
         for (let i = 0; i < numRows; i++) {
           fftResultArray[i] = new Array(numCols);
@@ -30,7 +29,8 @@ self.onmessage = function(event) {
           transform(realPart, imagPart);
           fftResultArray[i] = row.map((_, j) => [realPart[j], imagPart[j]]);
         }
-        const transposedResult = new Array(numCols);
+        array=null;
+        let transposedResult = new Array(numCols);
         for (let i = 0; i < numCols; i++) {
           transposedResult[i] = new Array(numRows);
         }
@@ -50,6 +50,7 @@ self.onmessage = function(event) {
             fftResultArray[j][i] = [realPart[j], imagPart[j]];
           }
         }
+        transposedResult=null;
         if(type=="inverted"){
           let shiftedFFT = new Array(numRows).fill(0).map(() => new Array(numCols).fill(0));
           const halfNumRows = Math.floor(numRows / 2);
